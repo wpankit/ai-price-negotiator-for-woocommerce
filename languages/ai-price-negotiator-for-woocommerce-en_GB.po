@@ -1,0 +1,180 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: AI Price Negotiator for WooCommerce\n"
+"POT-Creation-Date: 2025-12-10 02:30+0530\n"
+"PO-Revision-Date: 2025-12-10 02:30+0530\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_GB\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.8\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-WPHeader: ai-price-negotiator-for-woocommerce.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: "
+"__;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.min.js\n"
+
+#: ai-price-negotiator-for-woocommerce.php:50
+#: ai-price-negotiator-for-woocommerce.php:73
+#: ai-price-negotiator-for-woocommerce.php:181
+msgid "AI Price Negotiator"
+msgstr ""
+
+#: ai-price-negotiator-for-woocommerce.php:76
+msgid ""
+"Enter your OpenAI API key so the Negotiato AI engine can negotiate with "
+"customers. Keys are stored locally and never sent to Negotiato."
+msgstr ""
+
+#: ai-price-negotiator-for-woocommerce.php:79
+msgid "OpenAI API Key"
+msgstr ""
+
+#: ai-price-negotiator-for-woocommerce.php:83
+msgid "Required for chat responses. Example: sk-..."
+msgstr ""
+
+#: ai-price-negotiator-for-woocommerce.php:100
+msgid "Negotiato Floor Price"
+msgstr ""
+
+#: ai-price-negotiator-for-woocommerce.php:102
+msgid "Minimum acceptable price for AI negotiations powered by Negotiato."
+msgstr ""
+
+#: ai-price-negotiator-for-woocommerce.php:180
+msgid "Chat about this product"
+msgstr ""
+
+#: ai-price-negotiator-for-woocommerce.php:182
+msgid "Powered by the Negotiato AI engine."
+msgstr ""
+
+#: ai-price-negotiator-for-woocommerce.php:183
+msgid "Message"
+msgstr ""
+
+#: ai-price-negotiator-for-woocommerce.php:184
+msgid "Share your offer or questions"
+msgstr ""
+
+#: ai-price-negotiator-for-woocommerce.php:185
+msgid "Your offer"
+msgstr ""
+
+#: ai-price-negotiator-for-woocommerce.php:186
+msgid "Example: 39.99"
+msgstr ""
+
+#: ai-price-negotiator-for-woocommerce.php:187
+msgid "Current price"
+msgstr ""
+
+#: ai-price-negotiator-for-woocommerce.php:188
+msgid "Enter a number so we can negotiate and checkout automatically."
+msgstr ""
+
+#: ai-price-negotiator-for-woocommerce.php:189
+msgid "Send"
+msgstr ""
+
+#: ai-price-negotiator-for-woocommerce.php:190
+msgid "Sending..."
+msgstr ""
+
+#: ai-price-negotiator-for-woocommerce.php:191
+msgid "Please add a message or an offer."
+msgstr ""
+
+#: ai-price-negotiator-for-woocommerce.php:192
+msgid "Sorry, the negotiation service is temporarily unavailable."
+msgstr ""
+
+#: ai-price-negotiator-for-woocommerce.php:193
+msgid "Thanks for your message!"
+msgstr ""
+
+#: ai-price-negotiator-for-woocommerce.php:194
+msgid "Applying your deal and taking you to checkout..."
+msgstr ""
+
+#: ai-price-negotiator-for-woocommerce.php:195
+msgid "Deal accepted. Finishing checkout..."
+msgstr ""
+
+#: ai-price-negotiator-for-woocommerce.php:196
+msgid "Something went wrong. Please try again."
+msgstr ""
+
+#: ai-price-negotiator-for-woocommerce.php:238
+msgid "WooCommerce must be active."
+msgstr ""
+
+#: ai-price-negotiator-for-woocommerce.php:243
+msgid "Please add your OpenAI API key in Settings → AI Price Negotiator."
+msgstr ""
+
+#: ai-price-negotiator-for-woocommerce.php:249
+msgid "Product not found."
+msgstr ""
+
+#: ai-price-negotiator-for-woocommerce.php:273
+msgid "I could not finalize the checkout. Please try again or contact support."
+msgstr ""
+
+#: ai-price-negotiator-for-woocommerce.php:275
+msgid "Great, I am applying this deal and taking you to checkout."
+msgstr ""
+
+#: ai-price-negotiator-for-woocommerce.php:348
+msgid "Unable to access cart session."
+msgstr ""
+
+#: ai-price-negotiator-for-woocommerce.php:356
+msgid "Unable to add product to cart."
+msgstr ""
+
+#: ai-price-negotiator-for-woocommerce.php:369
+msgid "Unable to apply negotiated coupon."
+msgstr ""
+
+#: ai-price-negotiator-for-woocommerce.php:439
+msgid "OpenAI request failed."
+msgstr ""
+
+#: ai-price-negotiator-for-woocommerce.php:444
+msgid "Unexpected OpenAI response."
+msgstr ""
+
+#: ai-price-negotiator-for-woocommerce.php:455
+msgid ""
+"AI Price Negotiator for WooCommerce requires WooCommerce to be installed and "
+"active."
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "AI Price Negotiator for WooCommerce"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://negotiato.com/"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"AI-powered WooCommerce price negotiation plugin that lets customers submit "
+"offers and receive AI-driven counter-offers using the Negotiato AI engine."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "xWPAnkit"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://xwpankit.com/"
+msgstr ""

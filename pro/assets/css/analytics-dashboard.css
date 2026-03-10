@@ -1,0 +1,637 @@
+/**
+ * AI Price Negotiator — Analytics Dashboard Styles
+ * Modern card-based UI
+ */
+
+/* === Page Layout === */
+.aipn-analytics-wrap {
+    max-width: 1100px;
+    margin: 0;
+}
+
+.aipn-analytics-wrap .aipn-page-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+}
+
+.aipn-analytics-wrap .aipn-page-header__icon {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, #4F46E5, #7C3AED);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.aipn-analytics-wrap .aipn-page-header__icon .dashicons {
+    color: #fff;
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+}
+
+.aipn-analytics-wrap .aipn-page-header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+    padding: 0;
+    letter-spacing: -0.3px;
+    line-height: 1.2;
+}
+
+.aipn-analytics-wrap .aipn-page-header p {
+    font-size: 13px;
+    color: #6b7280;
+    margin: 2px 0 0;
+}
+
+/* === Toolbar: Period + Export === */
+.aipn-analytics-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    gap: 12px;
+}
+
+.aipn-analytics-toolbar .aipn-analytics-period {
+    margin-bottom: 0;
+}
+
+/* === Period Selector (Pill Tabs) === */
+.aipn-analytics-period {
+    display: flex;
+    gap: 4px;
+    background: #f3f4f6;
+    padding: 4px;
+    border-radius: 10px;
+    margin-bottom: 24px;
+    width: fit-content;
+}
+
+.aipn-analytics-period .aipn-period-btn {
+    padding: 7px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #6b7280;
+    text-decoration: none;
+    border-radius: 7px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    line-height: 1.4;
+}
+
+.aipn-analytics-period .aipn-period-btn:hover {
+    color: #374151;
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.aipn-analytics-period .aipn-period-btn--active {
+    background: #fff;
+    color: #111827;
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* === Export CSV Button === */
+.aipn-btn-export {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #4F46E5;
+    background: #fff;
+    border: 1.5px solid #4F46E5;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+
+.aipn-btn-export:hover {
+    background: #EEF2FF;
+    color: #4338CA;
+    border-color: #4338CA;
+}
+
+.aipn-btn-export:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.aipn-btn-export .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+}
+
+@keyframes aipn-spin {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.aipn-spin .dashicons {
+    animation: aipn-spin 0.8s linear infinite;
+}
+
+/* === Stats Cards === */
+.aipn-analytics-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.aipn-analytics-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    transition: box-shadow 0.2s ease;
+}
+
+.aipn-analytics-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.aipn-analytics-card__icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.aipn-analytics-card__icon--total     { background: #EEF2FF; }
+.aipn-analytics-card__icon--rate      { background: #ECFDF5; }
+.aipn-analytics-card__icon--discount  { background: #FEF3C7; }
+.aipn-analytics-card__icon--pct       { background: #FEE2E2; }
+.aipn-analytics-card__icon--revenue   { background: #F0F9FF; }
+.aipn-analytics-card__icon--turns     { background: #F5F3FF; }
+.aipn-analytics-card__icon--savings   { background: #FEF3C7; }
+.aipn-analytics-card__icon--abandoned { background: #FEF2F2; }
+.aipn-analytics-card__icon--cart      { background: #F0F9FF; }
+
+.aipn-analytics-card__value {
+    display: block;
+    font-size: 26px;
+    font-weight: 700;
+    color: #111827;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+}
+
+.aipn-analytics-card--success .aipn-analytics-card__value { color: #059669; }
+.aipn-analytics-card--revenue .aipn-analytics-card__value { color: #2563EB; }
+.aipn-analytics-card--warning .aipn-analytics-card__value { color: #DC2626; }
+
+.aipn-analytics-card__label {
+    display: block;
+    font-size: 12.5px;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+/* === Revenue Impact Panel === */
+.aipn-revenue-impact {
+    background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+    border-radius: 14px;
+    padding: 28px 32px;
+    margin-bottom: 28px;
+    color: #fff;
+}
+
+.aipn-revenue-impact h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 0 20px;
+    color: rgba(255, 255, 255, 0.85);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.aipn-revenue-impact__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.aipn-revenue-impact__item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.aipn-revenue-impact__value {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+}
+
+.aipn-revenue-impact__item--primary .aipn-revenue-impact__value {
+    color: #A5F3FC;
+}
+
+.aipn-revenue-impact__item--savings .aipn-revenue-impact__value {
+    color: #FDE68A;
+}
+
+.aipn-revenue-impact__label {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+}
+
+/* === Outcomes Breakdown === */
+.aipn-outcomes-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-bottom: 28px;
+}
+
+.aipn-outcome-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.aipn-outcome-row__label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.aipn-outcome-row__status {
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.aipn-outcome-row__count {
+    font-size: 13px;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.aipn-outcome-row__bar {
+    height: 10px;
+    background: #f3f4f6;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.aipn-outcome-row__fill {
+    height: 100%;
+    border-radius: 6px;
+    min-width: 0;
+    transition: width 0.6s ease;
+}
+
+.aipn-outcome-row__fill--green  { background: #10B981; }
+.aipn-outcome-row__fill--yellow { background: #F59E0B; }
+.aipn-outcome-row__fill--gray   { background: #9CA3AF; }
+
+/* === Table Section === */
+.aipn-analytics-section {
+    margin-top: 8px;
+}
+
+.aipn-analytics-section__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.aipn-analytics-section__header h2 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+    padding: 0;
+}
+
+/* Modern Table */
+.aipn-table-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 28px;
+}
+
+.aipn-table-card table {
+    margin: 0;
+    border: none;
+    border-radius: 0;
+}
+
+.aipn-table-card thead th {
+    background: #f9fafb;
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    padding: 12px 16px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.aipn-table-card tbody td {
+    padding: 14px 16px;
+    font-size: 13px;
+    color: #374151;
+    border-bottom: 1px solid #f3f4f6;
+    vertical-align: middle;
+}
+
+.aipn-table-card tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.aipn-table-card tbody tr:hover td {
+    background: #f9fafb;
+}
+
+/* Status Badge */
+.aipn-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.aipn-status-badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.aipn-status-badge--accepted  { background: #ECFDF5; color: #065F46; }
+.aipn-status-badge--accepted::before { background: #10B981; }
+
+.aipn-status-badge--rejected  { background: #FEF2F2; color: #991B1B; }
+.aipn-status-badge--rejected::before { background: #EF4444; }
+
+.aipn-status-badge--expired   { background: #FFFBEB; color: #92400E; }
+.aipn-status-badge--expired::before  { background: #F59E0B; }
+
+.aipn-status-badge--abandoned { background: #F3F4F6; color: #4B5563; }
+.aipn-status-badge--abandoned::before { background: #9CA3AF; }
+
+.aipn-status-badge--active    { background: #EFF6FF; color: #1E40AF; }
+.aipn-status-badge--active::before    { background: #3B82F6; }
+
+/* Coupon Code */
+.aipn-coupon-code {
+    font-family: ui-monospace, 'SFMono-Regular', 'SF Mono', Menlo, monospace;
+    font-size: 11.5px;
+    background: #f3f4f6;
+    padding: 3px 8px;
+    border-radius: 5px;
+    color: #4B5563;
+}
+
+/* View Chat Button */
+.aipn-btn-chat {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #4F46E5;
+    background: #EEF2FF;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.aipn-btn-chat:hover {
+    background: #E0E7FF;
+}
+
+.aipn-btn-chat--active {
+    background: #4F46E5;
+    color: #fff;
+}
+
+/* Empty State */
+.aipn-empty-state {
+    text-align: center;
+    padding: 48px 24px;
+    color: #9ca3af;
+}
+
+.aipn-empty-state__icon {
+    font-size: 36px;
+    margin-bottom: 12px;
+    opacity: 0.5;
+}
+
+.aipn-empty-state p {
+    font-size: 14px;
+    margin: 0;
+}
+
+/* === Chat Log Viewer === */
+.aipn-chat-row td {
+    padding: 0 !important;
+    background: transparent !important;
+}
+
+.aipn-chat-log {
+    background: #f9fafb;
+    border-top: 1px solid #e5e7eb;
+    margin: 0;
+    overflow: hidden;
+}
+
+.aipn-chat-log__header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    background: #fff;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.aipn-chat-log__header strong {
+    font-size: 13px;
+    font-weight: 600;
+    color: #111827;
+}
+
+.aipn-chat-log__meta {
+    flex: 1;
+    font-size: 12px;
+    color: #9ca3af;
+}
+
+.aipn-chat-log__close {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #6b7280;
+    background: #f3f4f6;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.aipn-chat-log__close:hover {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.aipn-chat-log__cart {
+    padding: 12px 20px;
+    background: #fff;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 13px;
+}
+
+.aipn-chat-log__cart strong {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 11px;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.aipn-chat-log__cart-item {
+    display: inline-block;
+    background: #EEF2FF;
+    color: #4338CA;
+    padding: 3px 10px;
+    border-radius: 6px;
+    margin: 2px 4px 2px 0;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.aipn-chat-log__messages {
+    padding: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.aipn-chat-log__msg {
+    display: flex;
+    flex-direction: column;
+    max-width: 75%;
+}
+
+.aipn-chat-log__msg--user {
+    align-self: flex-end;
+}
+
+.aipn-chat-log__msg--assistant {
+    align-self: flex-start;
+}
+
+.aipn-chat-log__role {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #6b7280;
+    margin-bottom: 4px;
+}
+
+.aipn-chat-log__msg--user .aipn-chat-log__role {
+    text-align: right;
+    color: #4338CA;
+}
+
+.aipn-chat-log__msg--assistant .aipn-chat-log__role {
+    color: #059669;
+}
+
+.aipn-chat-log__text {
+    display: block;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.55;
+    word-wrap: break-word;
+}
+
+.aipn-chat-log__msg--user .aipn-chat-log__text {
+    background: #4F46E5;
+    color: #fff;
+    border-bottom-right-radius: 4px;
+}
+
+.aipn-chat-log__msg--assistant .aipn-chat-log__text {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    color: #1f2937;
+    border-bottom-left-radius: 4px;
+}
+
+/* === Responsive === */
+@media (max-width: 782px) {
+    .aipn-analytics-toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .aipn-analytics-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .aipn-revenue-impact__grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    .aipn-revenue-impact {
+        padding: 20px;
+    }
+    .aipn-table-card {
+        overflow-x: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .aipn-analytics-cards {
+        grid-template-columns: 1fr;
+    }
+}
