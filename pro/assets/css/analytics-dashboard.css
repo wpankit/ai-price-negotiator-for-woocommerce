@@ -19,7 +19,7 @@
 .aipn-analytics-wrap .aipn-page-header__icon {
     width: 44px;
     height: 44px;
-    background: linear-gradient(135deg, #4F46E5, #7C3AED);
+    background: linear-gradient(135deg, #F59E0B, #F97316);
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -108,9 +108,9 @@
     padding: 7px 18px;
     font-size: 13px;
     font-weight: 600;
-    color: #4F46E5;
+    color: #F59E0B;
     background: #fff;
-    border: 1.5px solid #4F46E5;
+    border: 1.5px solid #F59E0B;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.15s ease;
@@ -119,9 +119,9 @@
 }
 
 .aipn-btn-export:hover {
-    background: #EEF2FF;
-    color: #4338CA;
-    border-color: #4338CA;
+    background: #FFFBEB;
+    color: #D97706;
+    border-color: #D97706;
 }
 
 .aipn-btn-export:disabled {
@@ -179,7 +179,7 @@
     margin-bottom: 8px;
 }
 
-.aipn-analytics-card__icon--total     { background: #EEF2FF; }
+.aipn-analytics-card__icon--total     { background: #FFFBEB; }
 .aipn-analytics-card__icon--rate      { background: #ECFDF5; }
 .aipn-analytics-card__icon--discount  { background: #FEF3C7; }
 .aipn-analytics-card__icon--pct       { background: #FEE2E2; }
@@ -211,7 +211,7 @@
 
 /* === Revenue Impact Panel === */
 .aipn-revenue-impact {
-    background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+    background: linear-gradient(135deg, #F59E0B 0%, #F97316 100%);
     border-radius: 14px;
     padding: 28px 32px;
     margin-bottom: 28px;
@@ -429,8 +429,8 @@
     padding: 5px 12px;
     font-size: 12px;
     font-weight: 500;
-    color: #4F46E5;
-    background: #EEF2FF;
+    color: #F59E0B;
+    background: #FFFBEB;
     border: none;
     border-radius: 6px;
     cursor: pointer;
@@ -438,11 +438,11 @@
 }
 
 .aipn-btn-chat:hover {
-    background: #E0E7FF;
+    background: #FEF3C7;
 }
 
 .aipn-btn-chat--active {
-    background: #4F46E5;
+    background: #F59E0B;
     color: #fff;
 }
 
@@ -537,8 +537,8 @@
 
 .aipn-chat-log__cart-item {
     display: inline-block;
-    background: #EEF2FF;
-    color: #4338CA;
+    background: #FFFBEB;
+    color: #D97706;
     padding: 3px 10px;
     border-radius: 6px;
     margin: 2px 4px 2px 0;
@@ -580,7 +580,7 @@
 
 .aipn-chat-log__msg--user .aipn-chat-log__role {
     text-align: right;
-    color: #4338CA;
+    color: #D97706;
 }
 
 .aipn-chat-log__msg--assistant .aipn-chat-log__role {
@@ -597,7 +597,7 @@
 }
 
 .aipn-chat-log__msg--user .aipn-chat-log__text {
-    background: #4F46E5;
+    background: #F59E0B;
     color: #fff;
     border-bottom-right-radius: 4px;
 }

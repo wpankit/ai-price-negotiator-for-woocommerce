@@ -13,7 +13,7 @@ AI-powered checkout negotiation — customers make offers on their cart and an A
 
 == Description ==
 
-AI Price Negotiator for WooCommerce transforms your checkout page into a smart negotiation experience. Instead of losing price-sensitive customers, let them make an offer on their entire cart and watch an AI sales negotiator close the deal.
+Built by the team behind [PluginStack.dev](https://pluginstack.dev/), AI Price Negotiator for WooCommerce transforms your checkout page into a smart negotiation experience. Instead of losing price-sensitive customers, let them make an offer on their entire cart and watch an AI sales negotiator close the deal.
 
 This plugin is **100% free and open source**. All features are included — no premium tiers, no upsells, no feature locks. Contributions are welcome on [GitHub](https://github.com/wpankit/ai-price-negotiator-for-woocommerce).
 

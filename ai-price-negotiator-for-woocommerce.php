@@ -4,8 +4,8 @@
  * Plugin URI: https://negotiato.com/
  * Description: AI-powered checkout negotiation — customers make offers on their entire cart and an AI negotiator closes the deal with smart counter-offers, cross-sells, and dynamic coupons.
  * Version: 0.0.1
- * Author: Ankit Panchal
- * Author URI: https://wpankit.com/
+ * Author: PluginStackDev
+ * Author URI: https://pluginstack.dev/
  * Text Domain: ai-price-negotiator-for-woocommerce
  * Domain Path: /languages
  * Requires at least: 5.8

@@ -7,8 +7,8 @@
 
 /* === Variables === */
 :root {
-    --aipn-primary: #4F46E5;
-    --aipn-primary-hover: #3730A3;
+    --aipn-primary: #F59E0B;
+    --aipn-primary-hover: #B45309;
     --aipn-bg: #ffffff;
     --aipn-surface: #f9fafb;
     --aipn-border: #e5e7eb;
@@ -383,7 +383,7 @@ a.aipn-widget__suggestion-name:hover {
 .aipn-widget__email-capture {
     padding: 16px;
     border-top: 1px solid var(--aipn-border);
-    background: linear-gradient(135deg, #f0f4ff 0%, #faf5ff 100%);
+    background: linear-gradient(135deg, #fffbeb 0%, #fff7ed 100%);
     text-align: center;
     animation: aipn-slide-in 0.3s ease;
 }
@@ -441,7 +441,7 @@ a.aipn-widget__suggestion-name:hover {
 .aipn-widget__email-form input[type="text"]:focus,
 .aipn-widget__email-form input[type="email"]:focus {
     border-color: var(--aipn-primary);
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
 }
 
 .aipn-widget__email-form input::placeholder {
@@ -561,7 +561,7 @@ a.aipn-widget__suggestion-name:hover {
 
 .aipn-widget__form-row:focus-within {
     border-color: var(--aipn-primary);
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
 }
 
 .aipn-widget__field {
@@ -624,6 +624,27 @@ a.aipn-widget__suggestion-name:hover {
 
 .aipn-widget__shake {
     animation: aipn-shake 0.4s ease;
+}
+
+/* Powered-by branding */
+.aipn-widget__powered {
+    text-align: center;
+    padding: 6px 12px;
+    border-top: 1px solid var(--aipn-border);
+}
+
+.aipn-widget__powered a {
+    font-size: 10px;
+    color: var(--aipn-text-muted);
+    text-decoration: none;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+    letter-spacing: 0.3px;
+}
+
+.aipn-widget__powered a:hover {
+    opacity: 1;
+    color: var(--aipn-primary);
 }
 
 /* === Responsive === */

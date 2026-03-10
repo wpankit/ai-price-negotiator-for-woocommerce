@@ -73,13 +73,7 @@ class AIPN_Settings {
                         <span class="aipn-version-badge">v<?php echo esc_html( AIPN_VERSION ); ?></span>
                         <span class="aipn-free-badge"><?php esc_html_e( 'Forever Free', 'ai-price-negotiator-for-woocommerce' ); ?></span>
                     </h1>
-                    <p>
-                        <?php esc_html_e( 'AI-powered checkout negotiation — let customers make offers and close deals automatically.', 'ai-price-negotiator-for-woocommerce' ); ?>
-                        <a href="https://github.com/wpankit/ai-price-negotiator-for-woocommerce" target="_blank" rel="noopener noreferrer" class="aipn-contribute-link">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-                            <?php esc_html_e( 'Contribute on GitHub', 'ai-price-negotiator-for-woocommerce' ); ?>
-                        </a>
-                    </p>
+                    <p><?php esc_html_e( 'AI-powered checkout negotiation — let customers make offers and close deals automatically.', 'ai-price-negotiator-for-woocommerce' ); ?></p>
                 </div>
             </div>
 
@@ -99,6 +93,21 @@ class AIPN_Settings {
                 ?>
                     <a href="<?php echo esc_url( $url ); ?>" class="<?php echo esc_attr( $class ); ?>"><?php echo esc_html( $label ); ?></a>
                 <?php endforeach; ?>
+
+                <span class="aipn-nav-external">
+                    <a href="https://negotiato.com/" target="_blank" rel="noopener noreferrer" class="aipn-nav-external__link">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                        <?php esc_html_e( 'Negotiato', 'ai-price-negotiator-for-woocommerce' ); ?>
+                    </a>
+                    <a href="https://github.com/wpankit/ai-price-negotiator-for-woocommerce" target="_blank" rel="noopener noreferrer" class="aipn-nav-external__link">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                        <?php esc_html_e( 'GitHub', 'ai-price-negotiator-for-woocommerce' ); ?>
+                    </a>
+                    <a href="https://pluginstack.dev/?utm_source=aipn&amp;utm_medium=admin&amp;utm_content=nav-link" target="_blank" rel="noopener noreferrer" class="aipn-nav-external__link">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                        <?php esc_html_e( 'PluginStack', 'ai-price-negotiator-for-woocommerce' ); ?>
+                    </a>
+                </span>
             </nav>
 
             <?php $has_sections = count( $sections ) > 1; ?>
@@ -154,6 +163,16 @@ class AIPN_Settings {
                         <?php endif; ?>
                     </p>
                 </form>
+
+            <div class="aipn-settings-footer">
+                <?php
+                printf(
+                    /* translators: %s: PluginStack.dev link */
+                    esc_html__( 'AI Price Negotiator is a community project by %s', 'ai-price-negotiator-for-woocommerce' ),
+                    '<a href="https://pluginstack.dev/?utm_source=aipn&amp;utm_medium=admin&amp;utm_content=settings-footer" target="_blank" rel="noopener noreferrer">PluginStack.dev</a>'
+                );
+                ?>
+            </div>
         </div>
         <?php
     }
@@ -454,7 +473,7 @@ class AIPN_Settings {
                 'id'      => 'aipn_primary_color',
                 'type'    => 'text',
                 'desc'    => __( 'Primary accent color for header, buttons, and user messages.', 'ai-price-negotiator-for-woocommerce' ),
-                'default' => '#4F46E5',
+                'default' => '#F59E0B',
                 'class'   => 'aipn-color-picker',
                 'css'     => 'width: 80px;',
             ),

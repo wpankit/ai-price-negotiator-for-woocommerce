@@ -64,8 +64,8 @@ $aipn_currency = html_entity_decode( get_woocommerce_currency_symbol(), ENT_QUOT
             padding: 6px 12px;
             font-size: 12px;
             font-weight: 500;
-            color: #4F46E5;
-            background: #EEF2FF;
+            color: #F59E0B;
+            background: #FFFBEB;
             border: none;
             border-radius: 6px;
             cursor: pointer;
@@ -99,7 +99,7 @@ $aipn_currency = html_entity_decode( get_woocommerce_currency_symbol(), ENT_QUOT
             letter-spacing: 0.4px;
             margin-bottom: 3px;
         }
-        .aipn-order-meta .aipn-chat-msg--user strong { color: #4338CA; }
+        .aipn-order-meta .aipn-chat-msg--user strong { color: #D97706; }
         .aipn-order-meta .aipn-chat-msg--assistant strong { color: #059669; }
     </style>
 

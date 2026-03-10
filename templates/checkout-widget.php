@@ -161,5 +161,10 @@ if ( ! isset( $aipn_widget_icon_sm ) ) {
                 </button>
             </div>
         </form>
+
+        <!-- Branding -->
+        <div class="aipn-widget__powered">
+            <a href="https://pluginstack.dev/?utm_source=aipn&amp;utm_medium=widget&amp;utm_content=powered-by" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Powered by PluginStack', 'ai-price-negotiator-for-woocommerce' ); ?></a>
+        </div>
     </div>
 </div>

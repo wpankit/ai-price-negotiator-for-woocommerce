@@ -101,7 +101,7 @@ class AIPN_Checkout_Widget {
         $this->assets_enqueued = true;
 
         // Appearance options.
-        $primary_color    = get_option( 'aipn_primary_color', '#4F46E5' );
+        $primary_color    = get_option( 'aipn_primary_color', '#F59E0B' );
         $user_bubble      = get_option( 'aipn_user_bubble_color', '' );
         $assistant_bubble = get_option( 'aipn_assistant_bubble_color', '#f3f4f6' );
         $border_radius    = (int) get_option( 'aipn_border_radius', 12 );
