@@ -1,0 +1,87 @@
+name: Build Plugin ZIP (on Tag) + Update Readme
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-zip:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout tag
+        uses: actions/checkout@v4
+
+      - name: Prepare variables
+        id: vars
+        run: |
+          # Example tag: v1.2.3  -> version: 1.2.3
+          TAG="${GITHUB_REF_NAME}"
+          VERSION="${TAG#v}"
+
+          PLUGIN_SLUG="ai-price-negotiator-for-woocommerce"
+
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "slug=$PLUGIN_SLUG" >> $GITHUB_OUTPUT
+
+      - name: Prepare clean build directory
+        run: |
+          SLUG="${{ steps.vars.outputs.slug }}"
+          BUILD_DIR="build/${SLUG}"
+          mkdir -p "$BUILD_DIR"
+
+          # Copy files into build folder (exclude dev-only stuff)
+          rsync -a --delete \
+            --exclude=".git/" \
+            --exclude=".github/" \
+            --exclude="node_modules/" \
+            --exclude="vendor/" \
+            --exclude="tests/" \
+            --exclude="test/" \
+            --exclude="phpunit.xml*" \
+            --exclude="*.log" \
+            --exclude=".DS_Store" \
+            --exclude="*.zip" \
+            ./ "$BUILD_DIR/"
+
+      - name: Update readme.txt Stable tag (and Version if present)
+        run: |
+          SLUG="${{ steps.vars.outputs.slug }}"
+          VERSION="${{ steps.vars.outputs.version }}"
+          README="build/${SLUG}/readme.txt"
+
+          if [ -f "$README" ]; then
+            # Update Stable tag
+            sed -i -E "s/^Stable tag:\s*.*/Stable tag: ${VERSION}/I" "$README"
+
+            # Update "Version:" line in readme.txt if it exists
+            if grep -qiE "^Version:" "$README"; then
+              sed -i -E "s/^Version:\s*.*/Version: ${VERSION}/I" "$README"
+            fi
+          else
+            echo "readme.txt not found at $README (skipping)"
+          fi
+
+      - name: Create ZIP
+        run: |
+          SLUG="${{ steps.vars.outputs.slug }}"
+          cd build
+          zip -r "../${SLUG}.zip" "${SLUG}" -x "*.git*" -x "**/.DS_Store"
+
+      - name: Upload Artifact (ZIP)
+        uses: actions/upload-artifact@v4
+        with:
+          name: plugin-zip-${{ steps.vars.outputs.tag }}
+          path: "*.zip"
+
+      - name: Attach ZIP to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.vars.outputs.tag }}
+          name: ${{ steps.vars.outputs.tag }}
+          files: "*.zip"
