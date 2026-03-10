@@ -1,1 +1,1 @@
-# ai-price-negotiator-for-woocommerce-
+# ai-price-negotiator-for-woocommerce
