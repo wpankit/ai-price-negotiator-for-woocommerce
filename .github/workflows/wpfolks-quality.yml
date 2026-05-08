@@ -1,14 +1,18 @@
 # WPFolks Quality Workflow
 #
-# Runs PHPCS (with WordPress-Extra) and `composer audit` on every push,
-# then reports the results to your WPFolks profile so the corresponding
-# engineering badges (WPCS Compliant, Security Audit Clean) auto-award.
+# Runs PHPCS (WordPress-Extra) and, when applicable, `composer audit`
+# on every push and reports the results back to your WPFolks profile
+# so the WPCS Compliant + Security Audit Clean badges auto-award.
+#
+# Composer is not required. If your repo has no composer.json, only
+# the PHPCS scan runs; the security scan is skipped (Composer audit
+# needs declared dependencies to evaluate).
 #
 # Setup:
-#   1. Save this file at .github/workflows/wpfolks-quality.yml in your repo.
-#   2. In your repo Settings → Secrets and variables → Actions, add:
-#        WPFOLKS_TOKEN   = your token from /settings/?tab=profile (WPFolks)
-#   3. Push a commit — the workflow runs and posts results.
+#   1. Save at .github/workflows/wpfolks-quality.yml in your repo.
+#   2. In Settings → Secrets and variables → Actions, add the secret
+#      WPFOLKS_TOKEN, value copied from /settings/?tab=profile.
+#   3. Push a commit. The workflow runs and posts results.
 
 name: WPFolks Quality
 
@@ -28,74 +32,75 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-          tools: composer:v2, cs2pr
+          tools: composer:v2
 
-      - name: Install Composer deps
-        run: composer install --prefer-dist --no-interaction --no-progress
-
-      - name: Install PHPCS + WPCS
+      - name: Install PHPCS + WPCS (global)
         run: |
-          composer global require --no-interaction \
+          composer global require --no-interaction --quiet \
             squizlabs/php_codesniffer \
             wp-coding-standards/wpcs \
             phpcsstandards/phpcsutils \
             phpcsstandards/phpcsextra
-          ~/.composer/vendor/bin/phpcs --config-set installed_paths \
-            ~/.composer/vendor/wp-coding-standards/wpcs,~/.composer/vendor/phpcsstandards/phpcsutils,~/.composer/vendor/phpcsstandards/phpcsextra
+          PHPCS_BIN="$(composer global config bin-dir --absolute --quiet)/phpcs"
+          GLOBAL_HOME="$(composer global config home --absolute --quiet)"
+          $PHPCS_BIN --config-set installed_paths \
+            $GLOBAL_HOME/vendor/wp-coding-standards/wpcs,$GLOBAL_HOME/vendor/phpcsstandards/phpcsutils,$GLOBAL_HOME/vendor/phpcsstandards/phpcsextra
+          echo "PHPCS_BIN=$PHPCS_BIN" >> "$GITHUB_ENV"
 
       - name: Run PHPCS (WordPress-Extra)
         id: phpcs
         continue-on-error: true
         run: |
           set +e
-          ~/.composer/vendor/bin/phpcs --standard=WordPress-Extra \
-            --extensions=php --report=summary . > phpcs-output.txt
+          "$PHPCS_BIN" --standard=WordPress-Extra \
+            --extensions=php --report=summary . > phpcs-output.txt 2>&1
           echo "exit_code=$?" >> "$GITHUB_OUTPUT"
 
-      - name: Run Composer Audit
+      - name: Run Composer Audit (only if composer.json present)
         id: audit
+        if: ${{ hashFiles('composer.json') != '' }}
         continue-on-error: true
         run: |
           set +e
           composer audit --format=plain > audit-output.txt 2>&1
           echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          echo "ran=true" >> "$GITHUB_OUTPUT"
 
       - name: Report to WPFolks
         if: always()
         env:
           WPFOLKS_TOKEN: ${{ secrets.WPFOLKS_TOKEN }}
         run: |
+          # PHPCS exit code 0 = pass; anything else (errors, warnings) = fail.
           PHPCS_PASSED=false
-          AUDIT_PASSED=false
           [ "${{ steps.phpcs.outputs.exit_code }}" = "0" ] && PHPCS_PASSED=true
-          [ "${{ steps.audit.outputs.exit_code }}" = "0" ] && AUDIT_PASSED=true
 
-          PHPCS_DETAILS=$(cat phpcs-output.txt 2>/dev/null | head -c 4000 | jq -Rs .)
-          AUDIT_DETAILS=$(cat audit-output.txt 2>/dev/null | head -c 4000 | jq -Rs .)
+          # Build the reports array via jq so escaping is correct
+          # regardless of what PHPCS / audit emitted.
+          PHPCS_DETAILS=$(head -c 4000 phpcs-output.txt 2>/dev/null || echo "")
+          REPORTS=$(jq -n \
+            --argjson p $PHPCS_PASSED \
+            --arg d "$PHPCS_DETAILS" \
+            '[{scan_type:"phpcs", passed:$p, score:(if $p then 100 else 0 end), details:$d}]')
 
-          PAYLOAD=$(cat <<JSON
-          {
-            "repo_full_name": "${{ github.repository }}",
-            "commit_sha": "${{ github.sha }}",
-            "reports": [
-              {
-                "scan_type": "phpcs",
-                "passed": $PHPCS_PASSED,
-                "score": $([ "$PHPCS_PASSED" = "true" ] && echo 100 || echo 0),
-                "details": $PHPCS_DETAILS
-              },
-              {
-                "scan_type": "security",
-                "passed": $AUDIT_PASSED,
-                "score": $([ "$AUDIT_PASSED" = "true" ] && echo 100 || echo 0),
-                "details": $AUDIT_DETAILS
-              }
-            ]
-          }
-          JSON
-          )
+          # Append security report only if `composer audit` ran.
+          if [ "${{ steps.audit.outputs.ran }}" = "true" ]; then
+            AUDIT_PASSED=false
+            [ "${{ steps.audit.outputs.exit_code }}" = "0" ] && AUDIT_PASSED=true
+            AUDIT_DETAILS=$(head -c 4000 audit-output.txt 2>/dev/null || echo "")
+            REPORTS=$(echo "$REPORTS" | jq \
+              --argjson p $AUDIT_PASSED \
+              --arg d "$AUDIT_DETAILS" \
+              '. += [{scan_type:"security", passed:$p, score:(if $p then 100 else 0 end), details:$d}]')
+          fi
+
+          PAYLOAD=$(jq -n \
+            --argjson r "$REPORTS" \
+            --arg repo "${{ github.repository }}" \
+            --arg sha "${{ github.sha }}" \
+            '{repo_full_name:$repo, commit_sha:$sha, reports:$r}')
 
           curl --fail-with-body -sS -X POST "http://wpfolks-dot-org.local/wp-json/wpfolks/v1/github/quality" \
-            -H "Authorization: Bearer ${WPFOLKS_TOKEN}" \
+            -H "Authorization: Bearer $WPFOLKS_TOKEN" \
             -H "Content-Type: application/json" \
             -d "$PAYLOAD"
