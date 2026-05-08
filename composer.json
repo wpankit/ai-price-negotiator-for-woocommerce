@@ -1,0 +1,15 @@
+{
+    "name": "ankitpanchal/ai-price-negotiator-for-woocommerce",
+    "autoload": {
+        "psr-4": {
+            "Ankitpanchal\\AiPriceNegotiatorForWoocommerce\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Ankit Panchal",
+            "email": "ankitpanchalweb7@gmail.com"
+        }
+    ],
+    "require": {}
+}
