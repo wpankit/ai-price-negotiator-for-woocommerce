@@ -111,5 +111,3 @@ add_action( 'plugins_loaded', function () {
     // Boot the plugin.
     new AIPN_Plugin();
 }, 20 );
-
-
