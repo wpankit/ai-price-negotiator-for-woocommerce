@@ -82,6 +82,7 @@ register_deactivation_hook( __FILE__, function () {
 } );
 
 /**
+ * 
  * Declare compatibility with WooCommerce features (HPOS, Blocks).
  */
 add_action( 'before_woocommerce_init', function () {
