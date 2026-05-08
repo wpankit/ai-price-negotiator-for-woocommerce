@@ -113,7 +113,7 @@ jobs:
             --arg sha "${{ github.sha }}" \
             '{repo_full_name:$repo, commit_sha:$sha, reports:$r}')
 
-          curl --fail-with-body -sS -X POST "http://wpfolks-dot-org.local/wp-json/wpfolks/v1/github/quality" \
+          curl --fail-with-body -sS -X POST "https://wpfolks.org/wp-json/wpfolks/v1/github/quality" \
             -H "Authorization: Bearer $WPFOLKS_TOKEN" \
             -H "Content-Type: application/json" \
             -d "$PAYLOAD"
