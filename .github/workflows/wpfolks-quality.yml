@@ -33,6 +33,9 @@ jobs:
         with:
           php-version: '8.2'
           tools: composer:v2
+          # pcov is required for the coverage step. Faster than
+          # xdebug and skipped silently if PHPUnit doesn't run.
+          coverage: pcov
 
       - name: Install PHPCS + WPCS (global)
         run: |
@@ -79,6 +82,42 @@ jobs:
           echo "exit_code=$?" >> "$GITHUB_OUTPUT"
           echo "ran=true" >> "$GITHUB_OUTPUT"
 
+      - name: Run PHPStan (only if phpstan config present)
+        id: phpstan
+        if: ${{ hashFiles('phpstan.neon', 'phpstan.neon.dist') != '' }}
+        continue-on-error: true
+        run: |
+          set +e
+          composer global require --no-interaction --quiet phpstan/phpstan
+          PHPSTAN_BIN="$(composer global config bin-dir --absolute --quiet)/phpstan"
+          $PHPSTAN_BIN analyze --no-progress --error-format=raw > phpstan-output.txt 2>&1
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          echo "ran=true" >> "$GITHUB_OUTPUT"
+
+      - name: Install project deps for PHPUnit (only if phpunit config + composer present)
+        id: project_install
+        if: ${{ hashFiles('phpunit.xml', 'phpunit.xml.dist') != '' && hashFiles('composer.json') != '' }}
+        continue-on-error: true
+        run: composer install --prefer-dist --no-interaction --no-progress
+
+      - name: Run PHPUnit with coverage (only if phpunit config present)
+        id: coverage
+        if: ${{ hashFiles('phpunit.xml', 'phpunit.xml.dist') != '' }}
+        continue-on-error: true
+        run: |
+          set +e
+          # pcov is faster than xdebug for coverage; setup-php
+          # ships with pcov available via the `coverage` input.
+          if [ -f vendor/bin/phpunit ]; then
+            PHPUNIT_BIN=vendor/bin/phpunit
+          else
+            composer global require --no-interaction --quiet phpunit/phpunit
+            PHPUNIT_BIN="$(composer global config bin-dir --absolute --quiet)/phpunit"
+          fi
+          $PHPUNIT_BIN --coverage-text=phpunit-coverage.txt > phpunit-output.txt 2>&1
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          echo "ran=true" >> "$GITHUB_OUTPUT"
+
       - name: Report to WPFolks
         if: always()
         env:
@@ -105,6 +144,38 @@ jobs:
               --argjson p $AUDIT_PASSED \
               --arg d "$AUDIT_DETAILS" \
               '. += [{scan_type:"security", passed:$p, score:(if $p then 100 else 0 end), details:$d}]')
+          fi
+
+          # 1.22.209 — Append static-analysis report only if PHPStan ran.
+          if [ "${{ steps.phpstan.outputs.ran }}" = "true" ]; then
+            PHPSTAN_PASSED=false
+            [ "${{ steps.phpstan.outputs.exit_code }}" = "0" ] && PHPSTAN_PASSED=true
+            PHPSTAN_DETAILS=$(head -c 4000 phpstan-output.txt 2>/dev/null || echo "")
+            REPORTS=$(echo "$REPORTS" | jq \
+              --argjson p $PHPSTAN_PASSED \
+              --arg d "$PHPSTAN_DETAILS" \
+              '. += [{scan_type:"phpstan", passed:$p, score:(if $p then 100 else 0 end), details:$d}]')
+          fi
+
+          # 1.22.209 — Append coverage report only if PHPUnit+coverage ran.
+          # Coverage badge requires >=80% line coverage. Parse the
+          # "Lines:" summary from --coverage-text output.
+          if [ "${{ steps.coverage.outputs.ran }}" = "true" ]; then
+            COV_PCT=0
+            if [ -f phpunit-coverage.txt ]; then
+              # Match "Lines:   N.NN%"
+              COV_PCT=$(grep -E '^\s*Lines:' phpunit-coverage.txt | head -1 | grep -oE '[0-9]+(\.[0-9]+)?%' | head -1 | tr -d '%')
+              COV_PCT=${COV_PCT%.*}  # round down to integer
+              [ -z "$COV_PCT" ] && COV_PCT=0
+            fi
+            COV_PASSED=false
+            [ "$COV_PCT" -ge 80 ] && COV_PASSED=true
+            COV_DETAILS=$(head -c 4000 phpunit-coverage.txt 2>/dev/null || echo "")
+            REPORTS=$(echo "$REPORTS" | jq \
+              --argjson p $COV_PASSED \
+              --argjson s $COV_PCT \
+              --arg d "$COV_DETAILS" \
+              '. += [{scan_type:"coverage", passed:$p, score:$s, details:$d}]')
           fi
 
           PAYLOAD=$(jq -n \
