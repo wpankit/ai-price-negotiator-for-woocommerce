@@ -36,15 +36,28 @@ jobs:
 
       - name: Install PHPCS + WPCS (global)
         run: |
+          # Composer 2.2+ blocks plugins unless explicitly allowed.
+          # WPCS pulls in dealerdirect/phpcodesniffer-composer-installer
+          # which auto-registers the WPCS standard with PHPCS — useful,
+          # but a plugin, so it needs the allowlist entry.
+          composer global config --no-plugins allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
+
           composer global require --no-interaction --quiet \
             squizlabs/php_codesniffer \
             wp-coding-standards/wpcs \
             phpcsstandards/phpcsutils \
             phpcsstandards/phpcsextra
+
           PHPCS_BIN="$(composer global config bin-dir --absolute --quiet)/phpcs"
           GLOBAL_HOME="$(composer global config home --absolute --quiet)"
+
+          # The composer plugin above usually wires up installed_paths
+          # automatically when it sees the WPCS standard installed,
+          # but set it explicitly as a fallback in case the plugin
+          # didn't run.
           $PHPCS_BIN --config-set installed_paths \
             $GLOBAL_HOME/vendor/wp-coding-standards/wpcs,$GLOBAL_HOME/vendor/phpcsstandards/phpcsutils,$GLOBAL_HOME/vendor/phpcsstandards/phpcsextra
+
           echo "PHPCS_BIN=$PHPCS_BIN" >> "$GITHUB_ENV"
 
       - name: Run PHPCS (WordPress-Extra)
