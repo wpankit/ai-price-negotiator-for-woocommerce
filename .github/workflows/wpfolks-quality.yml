@@ -31,7 +31,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: '8.3'
           tools: composer:v2
           # pcov is required for the coverage step. Faster than
           # xdebug and skipped silently if PHPUnit doesn't run.
