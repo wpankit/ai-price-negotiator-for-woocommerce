@@ -1,0 +1,101 @@
+# WPFolks Quality Workflow
+#
+# Runs PHPCS (with WordPress-Extra) and `composer audit` on every push,
+# then reports the results to your WPFolks profile so the corresponding
+# engineering badges (WPCS Compliant, Security Audit Clean) auto-award.
+#
+# Setup:
+#   1. Save this file at .github/workflows/wpfolks-quality.yml in your repo.
+#   2. In your repo Settings → Secrets and variables → Actions, add:
+#        WPFOLKS_TOKEN   = your token from /settings/?tab=profile (WPFolks)
+#   3. Push a commit — the workflow runs and posts results.
+
+name: WPFolks Quality
+
+on:
+  push:
+    branches: [ "**" ]
+  workflow_dispatch:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer:v2, cs2pr
+
+      - name: Install Composer deps
+        run: composer install --prefer-dist --no-interaction --no-progress
+
+      - name: Install PHPCS + WPCS
+        run: |
+          composer global require --no-interaction \
+            squizlabs/php_codesniffer \
+            wp-coding-standards/wpcs \
+            phpcsstandards/phpcsutils \
+            phpcsstandards/phpcsextra
+          ~/.composer/vendor/bin/phpcs --config-set installed_paths \
+            ~/.composer/vendor/wp-coding-standards/wpcs,~/.composer/vendor/phpcsstandards/phpcsutils,~/.composer/vendor/phpcsstandards/phpcsextra
+
+      - name: Run PHPCS (WordPress-Extra)
+        id: phpcs
+        continue-on-error: true
+        run: |
+          set +e
+          ~/.composer/vendor/bin/phpcs --standard=WordPress-Extra \
+            --extensions=php --report=summary . > phpcs-output.txt
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Run Composer Audit
+        id: audit
+        continue-on-error: true
+        run: |
+          set +e
+          composer audit --format=plain > audit-output.txt 2>&1
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Report to WPFolks
+        if: always()
+        env:
+          WPFOLKS_TOKEN: ${{ secrets.WPFOLKS_TOKEN }}
+        run: |
+          PHPCS_PASSED=false
+          AUDIT_PASSED=false
+          [ "${{ steps.phpcs.outputs.exit_code }}" = "0" ] && PHPCS_PASSED=true
+          [ "${{ steps.audit.outputs.exit_code }}" = "0" ] && AUDIT_PASSED=true
+
+          PHPCS_DETAILS=$(cat phpcs-output.txt 2>/dev/null | head -c 4000 | jq -Rs .)
+          AUDIT_DETAILS=$(cat audit-output.txt 2>/dev/null | head -c 4000 | jq -Rs .)
+
+          PAYLOAD=$(cat <<JSON
+          {
+            "repo_full_name": "${{ github.repository }}",
+            "commit_sha": "${{ github.sha }}",
+            "reports": [
+              {
+                "scan_type": "phpcs",
+                "passed": $PHPCS_PASSED,
+                "score": $([ "$PHPCS_PASSED" = "true" ] && echo 100 || echo 0),
+                "details": $PHPCS_DETAILS
+              },
+              {
+                "scan_type": "security",
+                "passed": $AUDIT_PASSED,
+                "score": $([ "$AUDIT_PASSED" = "true" ] && echo 100 || echo 0),
+                "details": $AUDIT_DETAILS
+              }
+            ]
+          }
+          JSON
+          )
+
+          curl --fail-with-body -sS -X POST "http://wpfolks-dot-org.local/wp-json/wpfolks/v1/github/quality" \
+            -H "Authorization: Bearer ${WPFOLKS_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD"
