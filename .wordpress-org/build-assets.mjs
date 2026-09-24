@@ -88,8 +88,7 @@ async function screenshots( browser ) {
 	const demoCookies = ( script ) => [ [ 'aipn_demo_shot', '1' ], [ 'aipn_demo_script', script ], [ 'aipn_demo_hat', String( hat ) ] ].map( ( [ name, value ] ) => ( { name, value, domain: DOMAIN, path: '/' } ) );
 	const watch = ( page, label ) => {
 		page.on( 'pageerror', ( e ) => errors.push( `${ label }: ${ e.message }` ) );
-		// The widget sends the shopper's email once with an empty message, which the plugin answers with a 400.
-		page.on( 'response', ( r ) => { if ( r.status() >= 400 && ! ( r.status() === 400 && r.url().includes( 'aipn/v1/negotiate' ) ) ) errors.push( `${ label }: HTTP ${ r.status() } ${ r.url() }` ); } );
+		page.on( 'response', ( r ) => { if ( r.status() >= 400 ) errors.push( `${ label }: HTTP ${ r.status() } ${ r.url() }` ); } );
 	};
 
 	// Checkout, as a guest with the demo cart and the billing details filled in.
@@ -98,14 +97,14 @@ async function screenshots( browser ) {
 		const page = await ctx.newPage();
 		watch( page, `checkout ${ script }` );
 		await page.setCookie( ...demoCookies( script ) );
-		await page.setViewport( { width: 1440, height: 1160, deviceScaleFactor: 1.5 } );
+		await page.setViewport( { width: 1440, height: 1190, deviceScaleFactor: 1.5 } );
 		for ( const id of cart ) {
 			await page.goto( `${ SITE_URL }/?add-to-cart=${ id }`, { waitUntil: 'domcontentloaded' } );
 		}
 		await page.goto( `${ SITE_URL }/checkout/`, { waitUntil: 'networkidle0' } );
 		await page.goto( `${ SITE_URL }/checkout/`, { waitUntil: 'networkidle0' } ); // Without the "added to cart" notices.
-		// Product descriptions, other plugins' buttons and the widget's author credit stay out of the shot.
-		await page.addStyleTag( { content: '.wc-block-components-product-metadata,.aipn-widget__powered,.ldfw{display:none!important} *{caret-color:transparent!important}' } );
+		// Product descriptions and other plugins' buttons stay out of the shot.
+		await page.addStyleTag( { content: '.wc-block-components-product-metadata,.ldfw{display:none!important} *{caret-color:transparent!important}' } );
 		for ( const [ field, value ] of [ [ '#email', 'emma.johnson@example.com' ], [ '#billing-first_name', 'Emma' ], [ '#billing-last_name', 'Johnson' ], [ '#billing-address_1', '1204 Maple Street' ], [ '#billing-city', 'Sacramento' ], [ '#billing-postcode', '95814' ], [ '#billing-phone', '(916) 555-0142' ] ] ) {
 			await page.click( field, { clickCount: 3 } );
 			await page.type( field, value );
@@ -124,7 +123,7 @@ async function screenshots( browser ) {
 		};
 		page.shoot = async ( name ) => {
 			await page.evaluate( () => window.scrollTo( 0, 0 ) );
-			await page.mouse.move( 1430, 1150 );
+			await page.mouse.move( 1430, 1180 );
 			await sleep( 400 );
 			shots[ name ] = await page.screenshot();
 		};
@@ -159,11 +158,11 @@ async function screenshots( browser ) {
 	page = await ctx.newPage();
 	watch( page, 'admin' );
 	await page.setCookie( ...login( ADMIN ), ...demoCookies( 'deal' ) );
-	const HIDE = '#toplevel_page_noteflow-notes,#wp-admin-bar-noteflow-quick,#wp-admin-bar-noteflow-bell,a[href*="pluginstack.dev"],.aipn-settings-footer{display:none!important} *{caret-color:transparent!important}';
+	const HIDE = '#toplevel_page_noteflow-notes,#wp-admin-bar-noteflow-quick,#wp-admin-bar-noteflow-bell{display:none!important} *{caret-color:transparent!important}';
 	const admin = async ( path, height = 900 ) => {
 		await page.setViewport( { width: 1440, height, deviceScaleFactor: 1.5 } );
 		await page.goto( `${ SITE_URL }/wp-admin/${ path }`, { waitUntil: 'networkidle2' } );
-		// Other plugins' menus and the author credit links stay out of the shot.
+		// Other plugins' menus stay out of the shot.
 		await page.addStyleTag( { content: HIDE } );
 		await page.evaluate( () => document.querySelectorAll( '#adminmenu > li' ).forEach( ( li ) => { if ( /^Like Dislike/.test( li.querySelector( '.wp-menu-name' )?.textContent || '' ) ) li.style.display = 'none'; } ) );
 		await page.mouse.move( 1435, height - 5 );

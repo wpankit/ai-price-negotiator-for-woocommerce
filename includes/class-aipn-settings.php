@@ -103,9 +103,9 @@ class AIPN_Settings {
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
                         <?php esc_html_e( 'GitHub', 'ai-price-negotiator-for-woocommerce' ); ?>
                     </a>
-                    <a href="https://pluginstack.dev/?utm_source=aipn&amp;utm_medium=admin&amp;utm_content=nav-link" target="_blank" rel="noopener noreferrer" class="aipn-nav-external__link">
+                    <a href="https://wpankit.com/" target="_blank" rel="noopener noreferrer" class="aipn-nav-external__link">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
-                        <?php esc_html_e( 'PluginStack', 'ai-price-negotiator-for-woocommerce' ); ?>
+                        <?php esc_html_e( 'WPAnkit', 'ai-price-negotiator-for-woocommerce' ); ?>
                     </a>
                 </span>
             </nav>
@@ -167,9 +167,9 @@ class AIPN_Settings {
             <div class="aipn-settings-footer">
                 <?php
                 printf(
-                    /* translators: %s: PluginStack.dev link */
-                    esc_html__( 'AI Price Negotiator is a community project by %s', 'ai-price-negotiator-for-woocommerce' ),
-                    '<a href="https://pluginstack.dev/?utm_source=aipn&amp;utm_medium=admin&amp;utm_content=settings-footer" target="_blank" rel="noopener noreferrer">PluginStack.dev</a>'
+                    /* translators: %s: WPAnkit link */
+                    esc_html__( 'AI Price Negotiator is a free, open-source plugin by %s.', 'ai-price-negotiator-for-woocommerce' ),
+                    '<a href="https://wpankit.com/" target="_blank" rel="noopener noreferrer">WPAnkit</a>'
                 );
                 ?>
             </div>
@@ -639,6 +639,7 @@ class AIPN_Settings {
             array( 'title' => __( 'Deal Accepted Text', 'ai-price-negotiator-for-woocommerce' ), 'id' => 'aipn_deal_message', 'type' => 'text', 'default' => '', 'placeholder' => __( 'Deal accepted!', 'ai-price-negotiator-for-woocommerce' ), 'css' => 'width: 250px;' ),
             array( 'title' => __( 'Sending Text', 'ai-price-negotiator-for-woocommerce' ), 'id' => 'aipn_sending_text', 'type' => 'text', 'default' => '', 'placeholder' => __( 'Negotiating...', 'ai-price-negotiator-for-woocommerce' ), 'css' => 'width: 250px;' ),
             array( 'title' => __( 'Error Message', 'ai-price-negotiator-for-woocommerce' ), 'id' => 'aipn_error_message', 'type' => 'text', 'default' => '', 'placeholder' => __( 'Something went wrong. Please try again.', 'ai-price-negotiator-for-woocommerce' ), 'css' => 'width: 350px;' ),
+            array( 'title' => __( 'AI Notice', 'ai-price-negotiator-for-woocommerce' ), 'id' => 'aipn_ai_notice', 'type' => 'text', 'default' => '', 'placeholder' => __( 'You\'re chatting with an AI assistant.', 'ai-price-negotiator-for-woocommerce' ), 'css' => 'width: 350px;', 'desc_tip' => __( 'Shown at the top of the chat, so shoppers know they are talking to an AI.', 'ai-price-negotiator-for-woocommerce' ) ),
             array( 'type' => 'sectionend', 'id' => 'aipn_widget_text_settings' ),
         );
     }

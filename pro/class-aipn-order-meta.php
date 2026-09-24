@@ -17,18 +17,37 @@ class AIPN_Order_Meta {
      * Register hooks.
      */
     public function register(): void {
-        // Save negotiation data when order is placed.
+        // Save negotiation data when an order is placed, on the classic checkout or the Checkout block.
         add_action( 'woocommerce_checkout_order_processed', array( $this, 'save_to_order' ), 10, 3 );
+        add_action( 'woocommerce_store_api_checkout_order_processed', array( $this, 'save_to_block_order' ) );
 
         // Display in admin order page.
         add_action( 'add_meta_boxes', array( $this, 'add_meta_box' ) );
     }
 
     /**
-     * Save negotiation session data to the order.
+     * Save negotiation session data to an order placed on the classic checkout.
      */
     public function save_to_order( int $order_id, array $posted_data, $order ): void {
-        if ( ! function_exists( 'WC' ) || ! WC()->session ) {
+        $this->save_negotiation( $order instanceof WC_Order ? $order : wc_get_order( $order_id ) );
+    }
+
+    /**
+     * Save negotiation session data to an order placed with the Checkout block.
+     *
+     * @param WC_Order $order Order.
+     */
+    public function save_to_block_order( $order ): void {
+        $this->save_negotiation( $order );
+    }
+
+    /**
+     * Save negotiation session data to the order.
+     *
+     * @param WC_Order|false $order Order.
+     */
+    private function save_negotiation( $order ): void {
+        if ( ! $order instanceof WC_Order || ! function_exists( 'WC' ) || ! WC()->session ) {
             return;
         }
 

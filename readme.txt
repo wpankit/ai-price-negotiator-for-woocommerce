@@ -3,7 +3,7 @@ Contributors: ankitmaru, siapanchal
 Tags: woocommerce, ai chatbot, price negotiation, make an offer, dynamic pricing
 Requires at least: 5.8
 Tested up to: 7.1
-Stable tag: 0.0.1
+Stable tag: 0.0.2
 Requires PHP: 7.4
 Requires Plugins: woocommerce
 License: GPLv2 or later
@@ -31,6 +31,7 @@ AI Price Negotiator is made by [WPAnkit](https://wpankit.com/) and is free: ever
 = Negotiation =
 
 * Negotiates on the whole cart, at checkout. It is not a general chatbot.
+* Shoppers are told they are chatting with an AI assistant, and it answers honestly if they ask.
 * A global floor price (90% of the price by default), plus a floor price, cost price and an on/off switch on each product.
 * Agreed prices are checked on your server: never below your floor, never above the cart total.
 * One-time coupons, limited to the shopper's email and the products in the cart, with an expiry you choose.
@@ -53,7 +54,7 @@ AI Price Negotiator is made by [WPAnkit](https://wpankit.com/) and is free: ever
 * Negotiations, acceptance rate, average discount, revenue from negotiations and abandoned chats, for the last 7, 30 or 90 days.
 * The products shoppers negotiate on most.
 * Every chat transcript, and a CSV export.
-* The deal, the transcript and a per-product discount breakdown on each order (classic checkout).
+* The deal, the transcript and a per-product discount breakdown on each order.
 
 = More free plugins by the author =
 
@@ -93,6 +94,10 @@ The global floor price is a share of each product's price, 90% by default. You c
 = Does it work with the Checkout block? =
 
 Yes. It works with the Checkout block and with the classic checkout, for guests and logged-in customers.
+
+= Do shoppers know they are talking to an AI? =
+
+Yes. The chat shows "You're chatting with an AI assistant." under its header, and the negotiator says it is an AI assistant if a shopper asks. You can reword the notice under AI Negotiator → Settings → Widget Text.
 
 = Can shoppers negotiate on a single product? =
 
@@ -149,6 +154,13 @@ This plugin connects to two external services.
 
 == Changelog ==
 
+= 0.0.2 =
+* Fixed: when the negotiator agreed a price before a guest had given their email, the discount was never applied after they entered it. It is now applied right away.
+* Fixed: orders placed with the Checkout block now get the AI Negotiation Details box, like classic checkout orders.
+* New: the chat tells shoppers they are talking to an AI assistant, and the negotiator answers honestly if asked. You can reword the notice under Widget Text.
+* Removed the "Powered by" link from the checkout chat, and tracking parameters from the links on the settings screen.
+* Tested with WordPress 7.1 and WooCommerce 11.1.
+
 = 0.0.1 =
 * Initial open-source release — all features free for everyone.
 * AI-powered checkout negotiation with smart counter-offers.
@@ -165,3 +177,8 @@ This plugin connects to two external services.
 * Volume discount and urgency rules.
 * Analytics dashboard with conversion metrics.
 * Per-order negotiation details with chat transcript.
+
+== Upgrade Notice ==
+
+= 0.0.2 =
+Applies guest deals that were agreed but never discounted, saves negotiation details on Checkout block orders, and tells shoppers they are chatting with an AI assistant.
