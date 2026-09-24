@@ -18,8 +18,6 @@
  * WC tested up to: 9.6
  */
 
-
-
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
@@ -84,7 +82,6 @@ register_deactivation_hook( __FILE__, function () {
 } );
 
 /**
- * 
  * Declare compatibility with WooCommerce features (HPOS, Blocks).
  */
 add_action( 'before_woocommerce_init', function () {
@@ -114,4 +111,3 @@ add_action( 'plugins_loaded', function () {
     // Boot the plugin.
     new AIPN_Plugin();
 }, 20 );
-

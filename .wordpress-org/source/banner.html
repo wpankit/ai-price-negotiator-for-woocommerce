@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AI Price Negotiator banner</title>
+<style>
+/* FONTS: build-assets.mjs injects the Inter and Manrope @font-face rules here. */
+
+:root {
+	--ink: #1f2937;
+	--body: #4b5563;
+	--amber: #f59e0b;
+	--amber-dark: #b45309;
+	--green: #059669;
+}
+
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html,
+body {
+	width: 772px;
+	height: 250px;
+	overflow: hidden;
+}
+
+body {
+	position: relative;
+	color: var(--ink);
+	font-family: Inter, sans-serif;
+	background:
+		radial-gradient(circle at 88% 0%, rgba(251, 191, 36, 0.55), transparent 45%),
+		radial-gradient(circle at 0% 120%, rgba(251, 146, 60, 0.35), transparent 42%),
+		linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+}
+
+.copy {
+	position: absolute;
+	top: 44px;
+	left: 40px;
+	width: 360px;
+}
+
+.brand {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+}
+
+.brand img {
+	width: 62px;
+	height: 62px;
+	filter: drop-shadow(0 8px 14px rgba(180, 83, 9, 0.3));
+}
+
+.brand h1 {
+	font: 800 31px/1.02 Manrope, sans-serif;
+	letter-spacing: -0.025em;
+}
+
+.brand h1 small {
+	display: block;
+	margin-top: 4px;
+	color: var(--amber-dark);
+	font: 700 14px/1 Inter, sans-serif;
+	letter-spacing: 0;
+}
+
+.tagline {
+	margin-top: 16px;
+	color: var(--body);
+	font: 500 15px/1.45 Inter, sans-serif;
+}
+
+.chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin-top: 14px;
+}
+
+.chip {
+	padding: 5px 10px;
+	border-radius: 999px;
+	background: rgba(255, 255, 255, 0.92);
+	box-shadow: 0 1px 2px rgba(120, 53, 15, 0.08), inset 0 0 0 1px rgba(120, 53, 15, 0.1);
+	color: #374151;
+	font: 600 11.5px/1 Inter, sans-serif;
+}
+
+/* The negotiation chat ----------------------------------------------------- */
+
+.chat {
+	position: absolute;
+	top: 18px;
+	left: 424px;
+	width: 312px;
+	overflow: hidden;
+	border-radius: 14px;
+	background: #fff;
+	box-shadow: 0 26px 50px rgba(146, 64, 14, 0.2), 0 0 0 1px rgba(120, 53, 15, 0.08);
+}
+
+.chat header {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	height: 38px;
+	padding: 0 14px;
+	background: var(--amber);
+	color: #fff;
+	font: 700 13px/1 Inter, sans-serif;
+}
+
+.chat header svg {
+	width: 16px;
+	height: 16px;
+}
+
+.messages {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	padding: 10px 12px;
+}
+
+.msg {
+	max-width: 84%;
+	padding: 8px 11px;
+	border-radius: 12px;
+	font: 500 11.5px/1.4 Inter, sans-serif;
+}
+
+.msg.ai {
+	align-self: flex-start;
+	border-bottom-left-radius: 4px;
+	background: #f3f4f6;
+	color: #111827;
+}
+
+.msg.me {
+	align-self: flex-end;
+	border-bottom-right-radius: 4px;
+	background: var(--amber);
+	color: #fff;
+}
+
+.deal {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 10px 14px;
+	border-top: 1px solid #d1fae5;
+	background: #ecfdf5;
+}
+
+.deal .check {
+	display: grid;
+	flex: none;
+	place-items: center;
+	width: 26px;
+	height: 26px;
+	border-radius: 50%;
+	background: var(--green);
+}
+
+.deal strong {
+	display: block;
+	color: #065f46;
+	font: 700 12.5px/1.2 Inter, sans-serif;
+}
+
+.deal span {
+	display: block;
+	margin-top: 2px;
+	color: #047857;
+	font: 500 11px/1.2 Inter, sans-serif;
+}
+
+.deal s {
+	color: #6b7280;
+}
+</style>
+</head>
+<body>
+	<div class="copy">
+		<div class="brand">
+			<img src="ICON_URI" alt="">
+			<h1>AI Price Negotiator<small>for WooCommerce</small></h1>
+		</div>
+		<p class="tagline">Shoppers make an offer at checkout. An AI negotiator closes the deal within your limits.</p>
+		<div class="chips">
+			<span class="chip">Your floor prices</span>
+			<span class="chip">Auto coupons</span>
+			<span class="chip">100% free</span>
+		</div>
+	</div>
+
+	<div class="chat">
+		<header>
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+			Price Negotiation
+		</header>
+		<div class="messages">
+			<p class="msg ai">Hi! What would you like to pay?</p>
+			<p class="msg me">Would you take $55?</p>
+			<p class="msg ai">Meet me at $62 and it's yours!</p>
+		</div>
+		<div class="deal">
+			<span class="check"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+			<div>
+				<strong>Deal accepted!</strong>
+				<span>Coupon applied. Total <s>$68.00</s> $62.00</span>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
