@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<ruleset name="AI Price Negotiator for WooCommerce">
+	<description>WordPress coding standards and PHP 7.4+ compatibility for AI Price Negotiator for WooCommerce.</description>
+
+	<!-- What to check. -->
+	<file>.</file>
+	<exclude-pattern>/.git/*</exclude-pattern>
+	<exclude-pattern>/vendor/*</exclude-pattern>
+	<exclude-pattern>/node_modules/*</exclude-pattern>
+	<!-- Generated translation files. -->
+	<exclude-pattern>/languages/*</exclude-pattern>
+	<!-- Scripts that build the wordpress.org listing assets; not part of the plugin. -->
+	<exclude-pattern>/tools/*</exclude-pattern>
+
+	<arg name="extensions" value="php"/>
+	<arg name="parallel" value="8"/>
+	<arg name="colors"/>
+	<arg value="sp"/>
+
+	<!-- Match the plugin header: WordPress 5.8+ and PHP 7.4+. -->
+	<config name="minimum_wp_version" value="5.8"/>
+	<config name="testVersion" value="7.4-"/>
+
+	<rule ref="WordPress-Extra"/>
+	<rule ref="PHPCompatibilityWP"/>
+
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="ai-price-negotiator-for-woocommerce"/>
+			</property>
+		</properties>
+	</rule>
+
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="aipn"/>
+			</property>
+		</properties>
+	</rule>
+
+	<!-- WooCommerce capabilities used by the plugin. -->
+	<rule ref="WordPress.WP.Capabilities">
+		<properties>
+			<property name="custom_capabilities" type="array">
+				<element value="manage_woocommerce"/>
+				<element value="edit_shop_orders"/>
+			</property>
+		</properties>
+	</rule>
+</ruleset>

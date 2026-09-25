@@ -1,3 +1,5 @@
 /vendor/
-.DS_Store
+/build/
 node_modules/
+.DS_Store
+.phpcs-cache
