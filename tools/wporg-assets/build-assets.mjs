@@ -1,16 +1,19 @@
 /**
  * Builds the wordpress.org listing assets for AI Price Negotiator for WooCommerce.
  *
- *   node .wordpress-org/build-assets.mjs                 icon PNGs and banners
- *   node .wordpress-org/build-assets.mjs --screenshots   also the screenshots
+ *   node tools/wporg-assets/build-assets.mjs                 icon PNGs and banners
+ *   node tools/wporg-assets/build-assets.mjs --screenshots   also the screenshots
  *
- * The icon PNGs come from icon.svg and the banners from source/banner.html, rendered
- * in headless Chrome at the exact sizes wordpress.org expects.
+ * Everything is written to .wordpress-org/ (or AIPN_ASSETS_DIR), which the deploy
+ * workflow copies to the plugin's assets/ folder on wordpress.org, so only the
+ * finished images live there. The icon PNGs come from .wordpress-org/icon.svg and the
+ * banners from banner.html in this folder, rendered in headless Chrome at the exact
+ * sizes wordpress.org expects.
  *
  * Screenshots are taken on a local WooCommerce site with the plugin active. While the
- * script runs, a must-use plugin (source/demo-shot.php) turns the site into a demo US
+ * script runs, a must-use plugin (demo-shot.php) turns the site into a demo US
  * store for the script's own browser only, and scripts the negotiator's replies, so no
- * OpenAI calls are made. source/demo-data.php adds demo negotiations for the Analytics
+ * OpenAI calls are made. demo-data.php adds demo negotiations for the Analytics
  * screens. Both are removed when the script ends. Checkout shots are taken as a guest;
  * admin shots as an administrator signed in through a short-lived WP-CLI session.
  *
@@ -29,6 +32,7 @@ import { homedir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 
 const HERE = dirname( fileURLToPath( import.meta.url ) );
+const OUT = process.env.AIPN_ASSETS_DIR || join( HERE, '../../.wordpress-org' );
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const QA = process.env.AIPN_QA_DIR || join( homedir(), 'Local Sites/pushrow-lp/app/public/wp-content/themes/wpankit-product/tools/qa' );
 const SITE_PATH = process.env.AIPN_SITE_PATH || join( homedir(), 'Local Sites/other-plugin/app/public' );
@@ -44,11 +48,11 @@ const sleep = ( ms ) => new Promise( ( resolve ) => setTimeout( resolve, ms ) );
 const font = ( family, pkg, weight ) =>
 	`@font-face{font-family:${ family };font-weight:${ weight };src:url(data:font/woff2;base64,${ readFileSync( join( QA, 'node_modules/@fontsource', pkg, 'files', `${ pkg }-latin-${ weight }-normal.woff2` ) ).toString( 'base64' ) }) format("woff2")}`;
 const FONTS = [ font( 'Inter', 'inter', 500 ), font( 'Inter', 'inter', 600 ), font( 'Inter', 'inter', 700 ), font( 'Manrope', 'manrope', 700 ), font( 'Manrope', 'manrope', 800 ) ].join( '\n' );
-const iconUri = 'data:image/svg+xml;base64,' + readFileSync( join( HERE, 'icon.svg' ) ).toString( 'base64' );
+const iconUri = 'data:image/svg+xml;base64,' + readFileSync( join( OUT, 'icon.svg' ) ).toString( 'base64' );
 
 /** Fails loudly when a PNG is not the size wordpress.org expects. */
 function check( name, width, height ) {
-	const png = readFileSync( join( HERE, name ) );
+	const png = readFileSync( join( OUT, name ) );
 	const [ w, h ] = [ png.readUInt32BE( 16 ), png.readUInt32BE( 20 ) ];
 	if ( w !== width || h !== height ) {
 		throw new Error( `${ name } is ${ w }x${ h }, expected ${ width }x${ height }` );
@@ -82,7 +86,7 @@ async function screenshots( browser ) {
 	if ( cart.includes( 0 ) || ! hat ) {
 		throw new Error( `Missing demo products: ${ PRODUCTS } and Hat` );
 	}
-	console.log( wp( 'eval-file', join( HERE, 'source/demo-data.php' ), PRODUCTS ).trim() );
+	console.log( wp( 'eval-file', join( HERE, 'demo-data.php' ), PRODUCTS ).trim() );
 	const shots = {};
 	const errors = [];
 	const demoCookies = ( script ) => [ [ 'aipn_demo_shot', '1' ], [ 'aipn_demo_script', script ], [ 'aipn_demo_hat', String( hat ) ] ].map( ( [ name, value ] ) => ( { name, value, domain: DOMAIN, path: '/' } ) );
@@ -224,7 +228,7 @@ async function screenshots( browser ) {
 	const order = [ 'chat', 'deal', 'suggest', 'invite', 'analytics', 'transcript', 'setup', 'product', 'behavior', 'rules', 'sales', 'visibility', 'colors', 'text' ];
 	order.forEach( ( key, i ) => {
 		const name = `screenshot-${ i + 1 }.png`;
-		writeFileSync( join( HERE, name ), shots[ key ] );
+		writeFileSync( join( OUT, name ), shots[ key ] );
 		console.log( `${ name }  ${ key }  ${ shots[ key ].readUInt32BE( 16 ) }x${ shots[ key ].readUInt32BE( 20 ) }  ${ Math.round( shots[ key ].length / 1024 ) } KB` );
 	} );
 }
@@ -235,7 +239,7 @@ const browser = await puppeteer.launch( { executablePath: CHROME, headless: 'new
 try {
 	if ( process.argv.includes( '--screenshots' ) ) {
 		mkdirSync( MU_DIR, { recursive: true } );
-		copyFileSync( join( HERE, 'source/demo-shot.php' ), MU_FILE );
+		copyFileSync( join( HERE, 'demo-shot.php' ), MU_FILE );
 		wroteMu = true;
 		await screenshots( browser );
 	}
@@ -245,11 +249,11 @@ try {
 		await page.setViewport( { width: size, height: size, deviceScaleFactor: 1 } );
 		await page.setContent( `<html><body style="margin:0;background:transparent"><img src="${ iconUri }" width="${ size }" height="${ size }" style="display:block"></body></html>` );
 		const name = `icon-${ size }x${ size }.png`;
-		await page.screenshot( { path: join( HERE, name ), omitBackground: true, clip: { x: 0, y: 0, width: size, height: size } } );
+		await page.screenshot( { path: join( OUT, name ), omitBackground: true, clip: { x: 0, y: 0, width: size, height: size } } );
 		check( name, size, size );
 	}
 
-	const banner = readFileSync( join( HERE, 'source/banner.html' ), 'utf8' )
+	const banner = readFileSync( join( HERE, 'banner.html' ), 'utf8' )
 		.replace( '/* FONTS: build-assets.mjs injects the Inter and Manrope @font-face rules here. */', FONTS )
 		.replaceAll( 'ICON_URI', iconUri );
 	for ( const [ width, height, scale ] of [ [ 772, 250, 1 ], [ 1544, 500, 2 ] ] ) {
@@ -257,14 +261,14 @@ try {
 		await page.setContent( banner, { waitUntil: 'load' } );
 		await page.evaluate( () => document.fonts.ready );
 		const name = `banner-${ width }x${ height }.png`;
-		await page.screenshot( { path: join( HERE, name ), clip: { x: 0, y: 0, width: 772, height: 250 } } );
+		await page.screenshot( { path: join( OUT, name ), clip: { x: 0, y: 0, width: 772, height: 250 } } );
 		check( name, width, height );
 	}
 } finally {
 	await browser.close();
 	if ( wroteMu ) {
 		try {
-			console.log( wp( 'eval-file', join( HERE, 'source/demo-data.php' ), 'clean' ).trim() );
+			console.log( wp( 'eval-file', join( HERE, 'demo-data.php' ), 'clean' ).trim() );
 		} catch ( e ) {
 			console.error( 'Could not remove the demo negotiations:', e.message );
 		}

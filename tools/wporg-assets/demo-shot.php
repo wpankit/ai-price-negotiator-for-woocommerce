@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: AI Price Negotiator demo screenshots (temporary)
- * Description: Installed by .wordpress-org/build-assets.mjs while it takes the screenshots, then removed. Only requests carrying the aipn_demo_shot cookie are affected: they see a demo US store, and the negotiator's replies are scripted, so no OpenAI calls are made.
+ * Description: Installed by tools/wporg-assets/build-assets.mjs while it takes the screenshots, then removed. Only requests carrying the aipn_demo_shot cookie are affected: they see a demo US store, and the negotiator's replies are scripted, so no OpenAI calls are made.
  *
  * @package AI_Price_Negotiator
  */
