@@ -8,6 +8,8 @@ on:
 
 permissions:
   contents: read
+  # Lets the action post its summary as a comment on pull requests.
+  pull-requests: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
