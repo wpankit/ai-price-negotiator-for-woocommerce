@@ -1,0 +1,40 @@
+name: PHP Lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: PHP ${{ matrix.php }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # From the plugin's minimum (Requires PHP: 7.4) to the newest release.
+        php: ['7.4', '8.0', '8.1', '8.2', '8.3', '8.4', '8.5']
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          tools: none
+
+      - name: Check every PHP file parses
+        run: |
+          find . -name '*.php' -not -path './vendor/*' -not -path './.git/*' -print0 \
+            | xargs -0 -n 1 -P 4 php -l > lint.log 2>&1 || { grep -v '^No syntax errors' lint.log; exit 1; }
+          echo "All $(grep -c '^No syntax errors' lint.log) PHP files parse on PHP ${{ matrix.php }}."

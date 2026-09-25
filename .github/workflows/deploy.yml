@@ -1,0 +1,77 @@
+name: Deploy to WordPress.org
+
+# Publishing a GitHub release (tag v1.2.3 or 1.2.3) builds the plugin, commits it to
+# the wordpress.org SVN repository as trunk and tags/1.2.3, updates the listing assets
+# from .wordpress-org, and attaches the plugin zip to the release.
+#
+# Running it by hand (Actions > Deploy to WordPress.org > Run workflow) is a dry run:
+# it builds the zip and prepares the SVN commit without committing anything.
+#
+# Needs the repository secrets SVN_USERNAME and SVN_PASSWORD (the SVN password from
+# your wordpress.org profile, under Account & Security).
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: deploy-wordpress-org
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Check the version numbers match
+        id: version
+        run: |
+          VERSION=$(sed -n 's/^[[:space:]]*\*[[:space:]]*Version:[[:space:]]*//p' ai-price-negotiator-for-woocommerce.php | head -n 1 | tr -d '[:space:]')
+          STABLE=$(sed -n 's/^Stable tag:[[:space:]]*//p' readme.txt | head -n 1 | tr -d '[:space:]')
+          CONSTANT=$(sed -n "s/^define( 'AIPN_VERSION', '\([^']*\)' );/\1/p" ai-price-negotiator-for-woocommerce.php | head -n 1)
+          echo "Plugin header: $VERSION, AIPN_VERSION: $CONSTANT, readme Stable tag: $STABLE"
+          if [ -z "$VERSION" ] || [ "$VERSION" != "$STABLE" ] || [ "$VERSION" != "$CONSTANT" ]; then
+            echo "::error::The plugin header Version, AIPN_VERSION and the readme Stable tag must all be the same."
+            exit 1
+          fi
+          if [ "$GITHUB_EVENT_NAME" = "release" ] && [ "${RELEASE_TAG#v}" != "$VERSION" ]; then
+            echo "::error::The release tag ($RELEASE_TAG) does not match the plugin version ($VERSION)."
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+
+      - name: Deploy to WordPress.org
+        id: deploy
+        uses: 10up/action-wordpress-plugin-deploy@stable
+        with:
+          generate-zip: true
+          dry-run: ${{ github.event_name != 'release' }}
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SLUG: ai-price-negotiator-for-woocommerce
+          VERSION: ${{ steps.version.outputs.version }}
+
+      - name: Attach the zip to the release
+        if: github.event_name == 'release'
+        run: gh release upload "$RELEASE_TAG" "$ZIP_PATH" --clobber
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          ZIP_PATH: ${{ steps.deploy.outputs.zip-path }}
+
+      - name: Keep the zip from a dry run
+        if: github.event_name != 'release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-price-negotiator-for-woocommerce
+          path: ${{ steps.deploy.outputs.zip-path }}
