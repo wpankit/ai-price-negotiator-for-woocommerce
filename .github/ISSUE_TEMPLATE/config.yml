@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Support question
+    url: https://wordpress.org/support/plugin/ai-price-negotiator-for-woocommerce/
+    about: Ask how to set up or use the plugin on the WordPress.org support forum.
+  - name: Report a security vulnerability
+    url: https://github.com/wpankit/ai-price-negotiator-for-woocommerce/security/advisories/new
+    about: Please report security issues privately, never in a public issue.
