@@ -23,18 +23,16 @@ class AIPN_Session_Manager {
 		$session = WC()->session->get( self::SESSION_KEY );
 
 		if ( is_array( $session ) ) {
-			// Expire after inactivity.
 			if ( time() - ( $session['last_activity'] ?? 0 ) > self::EXPIRY_SECONDS ) {
+				// Expire after inactivity.
 				$this->end_session( $session, 'expired' );
 				$session = null;
-			}
-			// Invalidate if cart changed.
-			elseif ( WC()->cart && $session['cart_hash'] !== WC()->cart->get_cart_hash() ) {
+			} elseif ( WC()->cart && WC()->cart->get_cart_hash() !== $session['cart_hash'] ) {
+				// Invalidate if cart changed.
 				$this->end_session( $session, 'abandoned' );
 				$session = null;
-			}
-			// Session already completed — don't reuse.
-			elseif ( isset( $session['status'] ) && $session['status'] !== 'active' ) {
+			} elseif ( isset( $session['status'] ) && 'active' !== $session['status'] ) {
+				// Session already completed — don't reuse.
 				$session = null;
 			}
 		}
@@ -59,10 +57,10 @@ class AIPN_Session_Manager {
 		}
 
 		// For completed sessions (accepted/rejected/expired).
-		if ( isset( $session['status'] ) && $session['status'] !== 'active' ) {
+		if ( isset( $session['status'] ) && 'active' !== $session['status'] ) {
 
 			// Only show accepted state if coupon is actually applied in the cart right now.
-			if ( $session['status'] === 'accepted' && ! empty( $session['coupon_code'] ) && WC()->cart ) {
+			if ( 'accepted' === $session['status'] && ! empty( $session['coupon_code'] ) && WC()->cart ) {
 				$applied_coupons = WC()->cart->get_applied_coupons();
 				if ( in_array( strtolower( $session['coupon_code'] ), array_map( 'strtolower', $applied_coupons ), true ) ) {
 					return $session;

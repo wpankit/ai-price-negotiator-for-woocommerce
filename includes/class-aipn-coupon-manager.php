@@ -35,7 +35,7 @@ class AIPN_Coupon_Manager {
 		$has_nego_coupon = false;
 
 		foreach ( $applied_coupons as $code ) {
-			if ( stripos( $code, self::COUPON_PREFIX ) === 0 ) {
+			if ( 0 === stripos( $code, self::COUPON_PREFIX ) ) {
 				$has_nego_coupon = true;
 				break;
 			}
@@ -93,7 +93,7 @@ class AIPN_Coupon_Manager {
 				'post_title'  => $coupon_code,
 				'post_type'   => 'shop_coupon',
 				'post_status' => 'publish',
-				'post_author' => get_current_user_id() ?: 1,
+				'post_author' => max( 1, get_current_user_id() ),
 			),
 			true
 		);
@@ -113,7 +113,7 @@ class AIPN_Coupon_Manager {
 		update_post_meta( $coupon_id, 'date_expires', strtotime( '+' . $expiry_hours . ' hours' ) );
 
 		// Restrict coupon to the negotiator's email (WC native validation at checkout).
-		if ( $customer_email !== '' && is_email( $customer_email ) ) {
+		if ( '' !== $customer_email && is_email( $customer_email ) ) {
 			update_post_meta( $coupon_id, 'customer_email', array( strtolower( $customer_email ) ) );
 		}
 
@@ -161,7 +161,7 @@ class AIPN_Coupon_Manager {
 
 		// Set billing email on the WC customer so the email restriction passes validation.
 		// Without this, guests who haven't filled the checkout form yet get rejected.
-		if ( $customer_email !== '' && WC()->customer ) {
+		if ( '' !== $customer_email && WC()->customer ) {
 			WC()->customer->set_billing_email( $customer_email );
 		}
 
@@ -187,7 +187,7 @@ class AIPN_Coupon_Manager {
 
 		foreach ( $cart_items as $index => $item ) {
 			$proportion = $item['line_total'] / $cart_total;
-			$is_last    = $index === count( $cart_items ) - 1;
+			$is_last    = count( $cart_items ) - 1 === $index;
 
 			// Last item gets the remainder to avoid rounding issues.
 			$item_discount = $is_last

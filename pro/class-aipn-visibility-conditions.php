@@ -41,28 +41,28 @@ class AIPN_Visibility_Conditions {
 
 		// Minimum cart value.
 		$min_cart = get_option( 'aipn_visibility_min_cart', '' );
-		if ( $min_cart !== '' && (float) $cart_data['cart_total'] < (float) $min_cart ) {
+		if ( '' !== $min_cart && (float) $cart_data['cart_total'] < (float) $min_cart ) {
 			return false;
 		}
 
 		// Maximum cart value.
 		$max_cart = get_option( 'aipn_visibility_max_cart', '' );
-		if ( $max_cart !== '' && (float) $cart_data['cart_total'] > (float) $max_cart ) {
+		if ( '' !== $max_cart && (float) $cart_data['cart_total'] > (float) $max_cart ) {
 			return false;
 		}
 
 		// Minimum cart items.
 		$min_qty = get_option( 'aipn_visibility_min_qty', '' );
-		if ( $min_qty !== '' && (int) $cart_data['item_count'] < (int) $min_qty ) {
+		if ( '' !== $min_qty && (int) $cart_data['item_count'] < (int) $min_qty ) {
 			return false;
 		}
 
 		// Login requirement.
 		$login_req = get_option( 'aipn_visibility_login_required', 'anyone' );
-		if ( $login_req === 'logged_in' && ! is_user_logged_in() ) {
+		if ( 'logged_in' === $login_req && ! is_user_logged_in() ) {
 			return false;
 		}
-		if ( $login_req === 'guest' && is_user_logged_in() ) {
+		if ( 'guest' === $login_req && is_user_logged_in() ) {
 			return false;
 		}
 
@@ -72,7 +72,7 @@ class AIPN_Visibility_Conditions {
 
 			// Minimum past orders.
 			$min_orders = get_option( 'aipn_visibility_min_orders', '' );
-			if ( $min_orders !== '' ) {
+			if ( '' !== $min_orders ) {
 				$order_count = wc_get_customer_order_count( $user_id );
 				if ( $order_count < (int) $min_orders ) {
 					return false;
@@ -81,7 +81,7 @@ class AIPN_Visibility_Conditions {
 
 			// Minimum lifetime spend.
 			$min_spent = get_option( 'aipn_visibility_min_spent', '' );
-			if ( $min_spent !== '' ) {
+			if ( '' !== $min_spent ) {
 				$customer    = new WC_Customer( $user_id );
 				$total_spent = (float) $customer->get_total_spent();
 				if ( $total_spent < (float) $min_spent ) {
@@ -91,7 +91,7 @@ class AIPN_Visibility_Conditions {
 
 			// Allowed user roles.
 			$allowed_roles = get_option( 'aipn_visibility_user_roles', '' );
-			if ( $allowed_roles !== '' ) {
+			if ( '' !== $allowed_roles ) {
 				$roles = array_map( 'trim', explode( ',', strtolower( $allowed_roles ) ) );
 				$roles = array_filter( $roles );
 				if ( ! empty( $roles ) ) {
@@ -105,14 +105,14 @@ class AIPN_Visibility_Conditions {
 			// Guest user — if min_orders or min_spent is set, guest can't satisfy it.
 			$min_orders = get_option( 'aipn_visibility_min_orders', '' );
 			$min_spent  = get_option( 'aipn_visibility_min_spent', '' );
-			if ( ( $min_orders !== '' && (int) $min_orders > 0 ) || ( $min_spent !== '' && (float) $min_spent > 0 ) ) {
+			if ( ( '' !== $min_orders && (int) $min_orders > 0 ) || ( '' !== $min_spent && (float) $min_spent > 0 ) ) {
 				return false;
 			}
 		}
 
 		// Product categories (include).
 		$include_cats = get_option( 'aipn_visibility_categories', '' );
-		if ( $include_cats !== '' ) {
+		if ( '' !== $include_cats ) {
 			$allowed_cats = array_map( 'trim', explode( ',', strtolower( $include_cats ) ) );
 			$allowed_cats = array_filter( $allowed_cats );
 			if ( ! empty( $allowed_cats ) && ! $this->cart_has_categories( $cart_data['items'], $allowed_cats ) ) {
@@ -122,7 +122,7 @@ class AIPN_Visibility_Conditions {
 
 		// Excluded categories.
 		$excluded_cats = get_option( 'aipn_visibility_excluded_categories', '' );
-		if ( $excluded_cats !== '' ) {
+		if ( '' !== $excluded_cats ) {
 			$blocked_cats = array_map( 'trim', explode( ',', strtolower( $excluded_cats ) ) );
 			$blocked_cats = array_filter( $blocked_cats );
 			if ( ! empty( $blocked_cats ) && $this->cart_has_categories( $cart_data['items'], $blocked_cats ) ) {
@@ -132,7 +132,7 @@ class AIPN_Visibility_Conditions {
 
 		// Schedule — day of week.
 		$schedule_days = get_option( 'aipn_visibility_schedule_days', '' );
-		if ( $schedule_days !== '' ) {
+		if ( '' !== $schedule_days ) {
 			$allowed_days = array_map( 'trim', explode( ',', strtolower( $schedule_days ) ) );
 			$allowed_days = array_filter( $allowed_days );
 			if ( ! empty( $allowed_days ) ) {
@@ -146,24 +146,24 @@ class AIPN_Visibility_Conditions {
 		// Schedule — time window.
 		$start_time = get_option( 'aipn_visibility_schedule_start', '' );
 		$end_time   = get_option( 'aipn_visibility_schedule_end', '' );
-		if ( $start_time !== '' || $end_time !== '' ) {
+		if ( '' !== $start_time || '' !== $end_time ) {
 			$now = wp_date( 'H:i' );
-			if ( $start_time !== '' && $now < $start_time ) {
+			if ( '' !== $start_time && $now < $start_time ) {
 				return false;
 			}
-			if ( $end_time !== '' && $now > $end_time ) {
+			if ( '' !== $end_time && $now > $end_time ) {
 				return false;
 			}
 		}
 
 		// Allowed countries.
 		$allowed_countries = get_option( 'aipn_visibility_countries', '' );
-		if ( $allowed_countries !== '' ) {
+		if ( '' !== $allowed_countries ) {
 			$countries = array_map( 'trim', explode( ',', strtoupper( $allowed_countries ) ) );
 			$countries = array_filter( $countries );
 			if ( ! empty( $countries ) ) {
 				$customer_country = $this->get_customer_country();
-				if ( $customer_country !== '' && ! in_array( $customer_country, $countries, true ) ) {
+				if ( '' !== $customer_country && ! in_array( $customer_country, $countries, true ) ) {
 					return false;
 				}
 			}
@@ -171,19 +171,19 @@ class AIPN_Visibility_Conditions {
 
 		// Device type.
 		$device = get_option( 'aipn_visibility_device', 'any' );
-		if ( $device === 'mobile' && ! wp_is_mobile() ) {
+		if ( 'mobile' === $device && ! wp_is_mobile() ) {
 			return false;
 		}
-		if ( $device === 'desktop' && wp_is_mobile() ) {
+		if ( 'desktop' === $device && wp_is_mobile() ) {
 			return false;
 		}
 
 		// Visitor type (returning vs new — cookie-based).
 		$visitor_type = get_option( 'aipn_visibility_visitor_type', 'anyone' );
-		if ( $visitor_type === 'returning' && empty( $_COOKIE['aipn_visited'] ) ) {
+		if ( 'returning' === $visitor_type && empty( $_COOKIE['aipn_visited'] ) ) {
 			return false;
 		}
-		if ( $visitor_type === 'new' && ! empty( $_COOKIE['aipn_visited'] ) ) {
+		if ( 'new' === $visitor_type && ! empty( $_COOKIE['aipn_visited'] ) ) {
 			return false;
 		}
 

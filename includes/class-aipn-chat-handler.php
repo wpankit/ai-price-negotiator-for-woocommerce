@@ -131,7 +131,7 @@ class AIPN_Chat_Handler {
 	 * Permission callback — verify nonce.
 	 */
 	public function check_permission( WP_REST_Request $request ): bool {
-		$nonce = $request->get_header( 'x-wp-nonce' ) ?: $request->get_header( 'X-WP-Nonce' );
+		$nonce = $request->get_header( 'x-wp-nonce' ); // Header names are case-insensitive.
 		return (bool) wp_verify_nonce( $nonce, 'wp_rest' );
 	}
 
@@ -144,12 +144,12 @@ class AIPN_Chat_Handler {
 			return new WP_Error( 'no_woocommerce', __( 'WooCommerce is required.', 'ai-price-negotiator-for-woocommerce' ), array( 'status' => 400 ) );
 		}
 
-		if ( get_option( 'aipn_enabled', 'yes' ) !== 'yes' ) {
+		if ( 'yes' !== get_option( 'aipn_enabled', 'yes' ) ) {
 			return new WP_Error( 'disabled', __( 'Negotiation is currently disabled.', 'ai-price-negotiator-for-woocommerce' ), array( 'status' => 403 ) );
 		}
 
 		$api_key = trim( (string) get_option( 'aipn_openai_key', '' ) );
-		if ( $api_key === '' ) {
+		if ( '' === $api_key ) {
 			return new WP_Error( 'missing_key', __( 'OpenAI API key is not configured.', 'ai-price-negotiator-for-woocommerce' ), array( 'status' => 400 ) );
 		}
 
@@ -165,7 +165,7 @@ class AIPN_Chat_Handler {
 		// Get or create session.
 		$session = $this->session_manager->get_or_create( $this->cart_analyzer );
 
-		if ( $session['status'] !== 'active' ) {
+		if ( 'active' !== $session['status'] ) {
 			return new WP_Error( 'session_closed', __( 'This negotiation has ended. Please refresh the page.', 'ai-price-negotiator-for-woocommerce' ), array( 'status' => 400 ) );
 		}
 
@@ -204,7 +204,7 @@ class AIPN_Chat_Handler {
 
 			if ( $previous ) {
 				$session['is_returning_negotiator'] = true;
-				$session['previous_final_offer']    = ( $previous['status'] === 'accepted' )
+				$session['previous_final_offer']    = ( 'accepted' === $previous['status'] )
 					? (float) $previous['final_price']
 					: 0.0;
 
@@ -224,7 +224,7 @@ class AIPN_Chat_Handler {
 		$incoming_name  = (string) $request->get_param( 'customer_name' );
 		$email_received = false;
 
-		if ( $incoming_email !== '' && is_email( $incoming_email ) ) {
+		if ( '' !== $incoming_email && is_email( $incoming_email ) ) {
 			$session['customer_email'] = $incoming_email;
 			$session['customer_name']  = $incoming_name;
 			$session['email_captured'] = true;
@@ -237,21 +237,21 @@ class AIPN_Chat_Handler {
 		$offer   = (float) $request->get_param( 'offer' );
 
 		// Try to extract a numeric offer from the message text too.
-		if ( $offer <= 0 && $message !== '' ) {
+		if ( $offer <= 0 && '' !== $message ) {
 			$offer = $this->extract_offer_from_message( $message );
 		}
 
 		// Allow empty input on the very first turn — this triggers the AI greeting.
-		$is_greeting = ( $message === '' && $offer <= 0 && empty( $session['conversation'] ) );
+		$is_greeting = ( '' === $message && $offer <= 0 && empty( $session['conversation'] ) );
 
 		// The widget sends the shopper's email on its own, without a message: apply a deal
 		// that was waiting for it, without calling the AI.
-		if ( ! $is_greeting && $message === '' && $offer <= 0 && $email_received ) {
+		if ( ! $is_greeting && '' === $message && $offer <= 0 && $email_received ) {
 			return $this->handle_email_only( $session );
 		}
 
 		// Require at least a message or an offer (unless greeting).
-		if ( ! $is_greeting && $message === '' && $offer <= 0 ) {
+		if ( ! $is_greeting && '' === $message && $offer <= 0 ) {
 			return new WP_Error( 'empty_input', __( 'Please enter a message or an offer amount.', 'ai-price-negotiator-for-woocommerce' ), array( 'status' => 400 ) );
 		}
 
@@ -259,7 +259,7 @@ class AIPN_Chat_Handler {
 		if ( ! $is_greeting ) {
 			$currency_symbol = html_entity_decode( get_woocommerce_currency_symbol(), ENT_QUOTES, 'UTF-8' );
 			$user_message    = $message;
-			if ( $offer > 0 && strpos( $message, (string) $offer ) === false ) {
+			if ( $offer > 0 && false === strpos( $message, (string) $offer ) ) {
 				$user_message .= ( $user_message ? ' ' : '' ) . sprintf( '(My offer: %s%.2f)', $currency_symbol, $offer );
 			}
 
@@ -523,7 +523,7 @@ class AIPN_Chat_Handler {
 	/**
 	 * Handle GET session — restore conversation on page reload.
 	 */
-	public function handle_get_session( WP_REST_Request $request ) {
+	public function handle_get_session( WP_REST_Request $request ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found -- REST callback signature.
 		if ( function_exists( 'wc_load_cart' ) ) {
 			wc_load_cart();
 		}
@@ -536,13 +536,13 @@ class AIPN_Chat_Handler {
 
 		return new WP_REST_Response(
 			array(
-				'active'         => $session['status'] === 'active',
+				'active'         => 'active' === $session['status'],
 				'status'         => $session['status'],
 				'session_id'     => $session['session_id'],
 				'conversation'   => $this->sanitize_conversation_for_frontend( $session['conversation'] ?? array() ),
 				'turn_count'     => $session['turn_count'] ?? 0,
 				'cart_total'     => $session['cart_total'] ?? 0,
-				'accepted'       => $session['status'] === 'accepted',
+				'accepted'       => 'accepted' === $session['status'],
 				'coupon_code'    => $session['coupon_code'] ?? '',
 				'email_captured' => ! empty( $session['email_captured'] ),
 			),
@@ -587,7 +587,7 @@ class AIPN_Chat_Handler {
 		$regular_price    = (float) $product->get_price();
 		$global_floor_pct = (float) get_option( 'aipn_global_floor_pct', 70 );
 		$floor_meta       = get_post_meta( $product_id, '_aipn_floor_price', true );
-		$floor_price      = ( $floor_meta !== '' && $floor_meta !== false )
+		$floor_price      = ( '' !== $floor_meta && false !== $floor_meta )
 			? (float) $floor_meta
 			: round( $regular_price * ( $global_floor_pct / 100 ), 2 );
 
@@ -720,7 +720,7 @@ class AIPN_Chat_Handler {
 		// Validate against floor price.
 		$global_floor_pct = (float) get_option( 'aipn_global_floor_pct', 70 );
 		$floor_meta       = get_post_meta( $product_id, '_aipn_floor_price', true );
-		$floor_price      = ( $floor_meta !== '' && $floor_meta !== false )
+		$floor_price      = ( '' !== $floor_meta && false !== $floor_meta )
 			? (float) $floor_meta
 			: round( $regular_price * ( $global_floor_pct / 100 ), 2 );
 
@@ -889,7 +889,7 @@ class AIPN_Chat_Handler {
 		}
 
 		// Skip bare-number extraction if message contains a percentage sign (e.g. "10% off").
-		if ( strpos( $message, '%' ) !== false ) {
+		if ( false !== strpos( $message, '%' ) ) {
 			return 0.0;
 		}
 

@@ -43,15 +43,15 @@ function aipn_is_premium() {
  * Autoloader: maps AIPN_ prefix to pro/ (advanced) and includes/ directories.
  */
 spl_autoload_register(
-	function ( $class ) {
+	function ( $class_name ) {
 		$prefix = 'AIPN_';
 
-		if ( strpos( $class, $prefix ) !== 0 ) {
-				return;
+		if ( 0 !== strpos( $class_name, $prefix ) ) {
+			return;
 		}
 
 		// Convert class name to file name: AIPN_Rules_Engine → class-aipn-rules-engine.php
-		$relative = strtolower( str_replace( '_', '-', substr( $class, strlen( $prefix ) ) ) );
+		$relative = strtolower( str_replace( '_', '-', substr( $class_name, strlen( $prefix ) ) ) );
 		$filename = 'class-aipn-' . $relative . '.php';
 
 		// Check pro/ (advanced features) first.

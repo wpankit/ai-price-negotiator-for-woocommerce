@@ -52,7 +52,7 @@ class AIPN_Order_Meta {
 		}
 
 		$session = WC()->session->get( 'aipn_negotiation' );
-		if ( ! is_array( $session ) || $session['status'] !== 'accepted' ) {
+		if ( ! is_array( $session ) || 'accepted' !== $session['status'] ) {
 			return;
 		}
 
@@ -80,7 +80,7 @@ class AIPN_Order_Meta {
 			$allocated = 0.0;
 			foreach ( $cart_items as $index => $item ) {
 				$proportion = $item['line_total'] / $cart_total;
-				$is_last    = $index === count( $cart_items ) - 1;
+				$is_last    = count( $cart_items ) - 1 === $index;
 				$discount   = $is_last
 					? round( $total_discount - $allocated, 2 )
 					: round( $total_discount * $proportion, 2 );

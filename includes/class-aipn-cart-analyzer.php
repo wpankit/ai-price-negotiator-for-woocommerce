@@ -47,13 +47,13 @@ class AIPN_Cart_Analyzer {
 
 			// Floor price: per-product meta takes priority, then global %.
 			$floor_meta  = get_post_meta( $product->get_id(), AIPN_Product_Meta::META_FLOOR_PRICE, true );
-			$floor_price = ( $floor_meta !== '' && $floor_meta !== false )
+			$floor_price = ( '' !== $floor_meta && false !== $floor_meta )
 				? (float) $floor_meta
 				: round( $price * ( $global_floor_pct / 100 ), 2 );
 
 			// Cost price for margin calculations.
 			$cost_meta  = get_post_meta( $product->get_id(), AIPN_Product_Meta::META_COST_PRICE, true );
-			$cost_price = ( $cost_meta !== '' && $cost_meta !== false ) ? (float) $cost_meta : 0.0;
+			$cost_price = ( '' !== $cost_meta && false !== $cost_meta ) ? (float) $cost_meta : 0.0;
 
 			$line_total       = round( $price * $quantity, 2 );
 			$line_floor_total = round( $floor_price * $quantity, 2 );
@@ -61,10 +61,10 @@ class AIPN_Cart_Analyzer {
 
 			// Check if negotiation is enabled for this product.
 			$negotiation_meta = get_post_meta( $product->get_id(), AIPN_Product_Meta::META_NEGOTIATION_ENABLED, true );
-			$is_negotiable    = $negotiation_meta !== 'no'; // Default to yes.
+			$is_negotiable    = 'no' !== $negotiation_meta; // Default to yes.
 
 			// If "Allow During Sales" is off, mark sale items as non-negotiable.
-			if ( $is_negotiable && $product->is_on_sale() && get_option( 'aipn_allow_during_sales', 'no' ) !== 'yes' ) {
+			if ( $is_negotiable && $product->is_on_sale() && 'yes' !== get_option( 'aipn_allow_during_sales', 'no' ) ) {
 				$is_negotiable = false;
 			}
 
@@ -81,7 +81,7 @@ class AIPN_Cart_Analyzer {
 				'line_floor'    => $line_floor_total,
 				'is_negotiable' => $is_negotiable,
 				'stock_qty'     => $product->managing_stock() ? $product->get_stock_quantity() : null,
-				'image_url'     => wp_get_attachment_image_url( $product->get_image_id(), 'thumbnail' ) ?: '',
+				'image_url'     => (string) wp_get_attachment_image_url( $product->get_image_id(), 'thumbnail' ),
 			);
 
 			$cart_total += $line_total;

@@ -27,7 +27,7 @@ class AIPN_Cross_Sell_Engine {
 	 * - Only suggest after the customer has engaged in negotiation
 	 */
 	public function enrich_context( array $context, array $cart_data, array $session ): array {
-		if ( get_option( 'aipn_enable_cross_sells', 'yes' ) !== 'yes' ) {
+		if ( 'yes' !== get_option( 'aipn_enable_cross_sells', 'yes' ) ) {
 			return $context;
 		}
 
@@ -107,7 +107,7 @@ class AIPN_Cross_Sell_Engine {
 
 			// Calculate floor and special offer price.
 			$floor_meta  = get_post_meta( $product_id, '_aipn_floor_price', true );
-			$floor_price = ( $floor_meta !== '' && $floor_meta !== false )
+			$floor_price = ( '' !== $floor_meta && false !== $floor_meta )
 				? (float) $floor_meta
 				: round( $price * ( $global_floor_pct / 100 ) * 2 ) / 2;
 
@@ -131,7 +131,7 @@ class AIPN_Cross_Sell_Engine {
 				'special_price' => $special_price,
 				'related_to'    => $related_to,
 				'reason'        => $this->generate_reason( $product, $related_to ),
-				'image_url'     => wp_get_attachment_image_url( $product->get_image_id(), 'thumbnail' ) ?: '',
+				'image_url'     => (string) wp_get_attachment_image_url( $product->get_image_id(), 'thumbnail' ),
 				'permalink'     => $product->get_permalink(),
 			);
 		}

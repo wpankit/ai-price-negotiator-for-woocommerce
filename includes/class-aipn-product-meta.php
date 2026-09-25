@@ -29,12 +29,14 @@ class AIPN_Product_Meta {
 	public function render_fields(): void {
 		echo '<div class="options_group aipn-product-options">';
 
+		$negotiation_enabled = get_post_meta( get_the_ID(), self::META_NEGOTIATION_ENABLED, true );
+
 		woocommerce_wp_checkbox(
 			array(
 				'id'          => self::META_NEGOTIATION_ENABLED,
 				'label'       => __( 'Enable Negotiation', 'ai-price-negotiator-for-woocommerce' ),
 				'description' => __( 'Allow customers to negotiate the price of this product at checkout.', 'ai-price-negotiator-for-woocommerce' ),
-				'value'       => get_post_meta( get_the_ID(), self::META_NEGOTIATION_ENABLED, true ) ?: 'yes',
+				'value'       => $negotiation_enabled ? $negotiation_enabled : 'yes',
 				'cbvalue'     => 'yes',
 			)
 		);
@@ -95,7 +97,7 @@ class AIPN_Product_Meta {
 			? wc_clean( sanitize_text_field( wp_unslash( $_POST[ self::META_COST_PRICE ] ) ) )
 			: '';
 
-		if ( $cost_raw === '' || $cost_raw === false ) {
+		if ( '' === $cost_raw || false === $cost_raw ) {
 			$product->delete_meta_data( self::META_COST_PRICE );
 		} else {
 			$cost_price = function_exists( 'wc_format_decimal' )
@@ -109,7 +111,7 @@ class AIPN_Product_Meta {
 			? wc_clean( sanitize_text_field( wp_unslash( $_POST[ self::META_FLOOR_PRICE ] ) ) )
 			: '';
 
-		if ( $raw === '' || $raw === false ) {
+		if ( '' === $raw || false === $raw ) {
 			$product->delete_meta_data( self::META_FLOOR_PRICE );
 		} else {
 			$price = function_exists( 'wc_format_decimal' )

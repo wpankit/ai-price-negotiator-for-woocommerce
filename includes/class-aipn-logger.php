@@ -85,10 +85,10 @@ class AIPN_Logger {
 
 		$allowed_order_by = array( 'created_at', 'cart_total', 'discount_amount', 'turn_count' );
 		$order_by         = esc_sql( in_array( $args['order_by'], $allowed_order_by, true ) ? $args['order_by'] : 'created_at' );
-		$order            = esc_sql( strtoupper( $args['order'] ) === 'ASC' ? 'ASC' : 'DESC' );
+		$order            = esc_sql( 'ASC' === strtoupper( $args['order'] ) ? 'ASC' : 'DESC' );
 
 		if ( ! empty( $args['status'] ) ) {
-			return $wpdb->get_results(
+			return (array) $wpdb->get_results(
 				$wpdb->prepare(
 					"SELECT * FROM `{$table}` WHERE status = %s ORDER BY `{$order_by}` {$order} LIMIT %d OFFSET %d",
 					$args['status'],
@@ -96,17 +96,17 @@ class AIPN_Logger {
 					(int) $args['offset']
 				),
 				ARRAY_A
-			) ?: array();
+			);
 		}
 
-		return $wpdb->get_results(
+		return (array) $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT * FROM `{$table}` WHERE 1=1 ORDER BY `{$order_by}` {$order} LIMIT %d OFFSET %d",
 				(int) $args['limit'],
 				(int) $args['offset']
 			),
 			ARRAY_A
-		) ?: array();
+		);
 	}
 
 	/**
@@ -270,7 +270,7 @@ class AIPN_Logger {
 		$since = gmdate( 'Y-m-d H:i:s', strtotime( "-{$hours} hours" ) );
 
 		// Build query based on available identifiers.
-		if ( $email !== '' && $user_id > 0 ) {
+		if ( '' !== $email && $user_id > 0 ) {
 			$row = $wpdb->get_row(
 				$wpdb->prepare(
 					"SELECT * FROM `{$table}` WHERE created_at >= %s AND (customer_email = %s OR customer_id = %d) ORDER BY created_at DESC LIMIT 1",
@@ -280,7 +280,7 @@ class AIPN_Logger {
 				),
 				ARRAY_A
 			);
-		} elseif ( $email !== '' ) {
+		} elseif ( '' !== $email ) {
 			$row = $wpdb->get_row(
 				$wpdb->prepare(
 					"SELECT * FROM `{$table}` WHERE created_at >= %s AND customer_email = %s ORDER BY created_at DESC LIMIT 1",
@@ -302,7 +302,7 @@ class AIPN_Logger {
 			return null;
 		}
 
-		return $row ?: null;
+		return $row ? $row : null;
 	}
 
 	/**
@@ -314,7 +314,7 @@ class AIPN_Logger {
 		$table = $this->table_name();
 		$since = gmdate( 'Y-m-d H:i:s', strtotime( "-{$days} days" ) );
 
-		return $wpdb->get_results(
+		return (array) $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT created_at, customer_name, customer_email, customer_id, status, cart_total, final_price,
                         discount_amount, turn_count, coupon_code
@@ -324,6 +324,6 @@ class AIPN_Logger {
 				$since
 			),
 			ARRAY_A
-		) ?: array();
+		);
 	}
 }

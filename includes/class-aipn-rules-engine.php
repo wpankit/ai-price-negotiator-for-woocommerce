@@ -117,9 +117,9 @@ class AIPN_Rules_Engine {
 		}
 
 		// Turn-specific strategies.
-		if ( $current_turn === 0 ) {
+		if ( 0 === $current_turn ) {
 			$rules[] = 'This is the first message. Welcome them and invite them to name their price. Don\'t mention any numbers yet.';
-		} elseif ( $current_turn === 1 && $best_offer > 0 ) {
+		} elseif ( 1 === $current_turn && $best_offer > 0 ) {
 			$rules[] = 'They just made their first offer. Acknowledge it positively, explain the value, then counter closer to your target.';
 		}
 
@@ -370,7 +370,7 @@ class AIPN_Rules_Engine {
 			$external_coupons = array_filter(
 				$applied_coupons,
 				function ( $code ) {
-					return strpos( $code, 'aipn-' ) !== 0;
+					return 0 !== strpos( $code, 'aipn-' );
 				}
 			);
 
@@ -390,7 +390,7 @@ class AIPN_Rules_Engine {
 	 */
 	private function build_custom_rules(): array {
 		$raw = trim( (string) get_option( 'aipn_custom_rules', '' ) );
-		if ( $raw === '' ) {
+		if ( '' === $raw ) {
 			return array();
 		}
 
@@ -403,7 +403,7 @@ class AIPN_Rules_Engine {
 	 * Determine the conversation phase.
 	 */
 	private function determine_phase( int $turn_count, bool $has_offered ): string {
-		if ( $turn_count === 0 ) {
+		if ( 0 === $turn_count ) {
 			return 'greeting';
 		}
 		if ( ! $has_offered ) {

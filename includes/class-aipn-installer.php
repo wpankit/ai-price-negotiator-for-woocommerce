@@ -22,13 +22,13 @@ class AIPN_Installer {
 		update_option( self::DB_VERSION_OPTION, self::DB_VERSION );
 
 		// Set default options if they don't exist.
-		if ( get_option( 'aipn_enabled' ) === false ) {
+		if ( false === get_option( 'aipn_enabled' ) ) {
 			update_option( 'aipn_enabled', 'yes' );
 		}
-		if ( get_option( 'aipn_global_floor_pct' ) === false ) {
+		if ( false === get_option( 'aipn_global_floor_pct' ) ) {
 			update_option( 'aipn_global_floor_pct', '90' );
 		}
-		if ( get_option( 'aipn_widget_position' ) === false ) {
+		if ( false === get_option( 'aipn_widget_position' ) ) {
 			update_option( 'aipn_widget_position', 'before_submit' );
 		}
 	}

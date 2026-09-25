@@ -200,7 +200,7 @@ $aipn_currency = html_entity_decode( get_woocommerce_currency_symbol(), ENT_QUOT
 			$aipn_role = $aipn_msg['role'] ?? 'assistant';
 			?>
 		<div class="aipn-chat-msg aipn-chat-msg--<?php echo esc_attr( $aipn_role ); ?>">
-			<strong><?php echo esc_html( $aipn_role === 'user' ? __( 'Customer', 'ai-price-negotiator-for-woocommerce' ) : __( 'AI Agent', 'ai-price-negotiator-for-woocommerce' ) ); ?></strong>
+			<strong><?php echo esc_html( 'user' === $aipn_role ? __( 'Customer', 'ai-price-negotiator-for-woocommerce' ) : __( 'AI Agent', 'ai-price-negotiator-for-woocommerce' ) ); ?></strong>
 			<?php echo esc_html( $aipn_msg['content'] ?? '' ); ?>
 		</div>
 		<?php endforeach; ?>

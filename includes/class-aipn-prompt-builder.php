@@ -119,7 +119,7 @@ class AIPN_Prompt_Builder {
 
 		// --- CUSTOMER CONTEXT ---
 		$customer_name = $context['customer_name'] ?? '';
-		if ( $customer_name !== '' ) {
+		if ( '' !== $customer_name ) {
 			$prompt .= sprintf( "CUSTOMER'S NAME: %s. Use their name naturally in conversation (not every message, but occasionally).\n", $customer_name );
 		}
 
@@ -371,7 +371,7 @@ class AIPN_Prompt_Builder {
 						'product_id'    => (int) $match[1],
 						'special_price' => $sp,
 						'name'          => $product->get_name(),
-						'image_url'     => wp_get_attachment_image_url( $product->get_image_id(), 'thumbnail' ) ?: '',
+						'image_url'     => (string) wp_get_attachment_image_url( $product->get_image_id(), 'thumbnail' ),
 						'regular_price' => $regular_price,
 						'permalink'     => $product->get_permalink(),
 					);

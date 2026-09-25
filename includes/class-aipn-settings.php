@@ -78,7 +78,7 @@ class AIPN_Settings {
 			</div>
 
             <?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- WP core settings-updated query param. ?>
-			<?php if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] === 'true' ) : ?>
+			<?php if ( isset( $_GET['settings-updated'] ) && 'true' === $_GET['settings-updated'] ) : ?>
 				<div class="aipn-notice-saved">
 					<span class="aipn-notice-saved__icon"></span>
 					<?php esc_html_e( 'Your settings have been saved.', 'ai-price-negotiator-for-woocommerce' ); ?>
@@ -144,7 +144,7 @@ class AIPN_Settings {
 
 					<div class="aipn-form-card<?php echo $has_sections ? ' aipn-form-card--sectioned' : ''; ?>">
 						<?php
-						if ( $current_tab === 'pro' ) {
+						if ( 'pro' === $current_tab ) {
 							$pro_wc_fields = $this->get_pro_wc_fields( $current_section );
 							if ( ! empty( $pro_wc_fields ) ) {
 								woocommerce_admin_fields( $pro_wc_fields );
@@ -161,7 +161,7 @@ class AIPN_Settings {
 						<button type="submit" class="button-primary aipn-save-btn" name="aipn_save" value="1">
 							<?php esc_html_e( 'Save changes', 'ai-price-negotiator-for-woocommerce' ); ?>
 						</button>
-						<?php if ( $current_tab === 'pro' && $current_section === 'styling' ) : ?>
+						<?php if ( 'pro' === $current_tab && 'styling' === $current_section ) : ?>
 							<button type="button" class="button aipn-reset-styling-btn" id="aipn-reset-styling">
 								<?php esc_html_e( 'Reset Styling to Defaults', 'ai-price-negotiator-for-woocommerce' ); ?>
 							</button>
@@ -198,7 +198,7 @@ class AIPN_Settings {
 		$tab     = isset( $_POST['aipn_active_tab'] ) ? sanitize_text_field( wp_unslash( $_POST['aipn_active_tab'] ) ) : 'general';
 		$section = isset( $_POST['aipn_active_section'] ) ? sanitize_text_field( wp_unslash( $_POST['aipn_active_section'] ) ) : '';
 
-		if ( $tab === 'pro' ) {
+		if ( 'pro' === $tab ) {
 			$pro_wc_fields = $this->get_pro_wc_fields( $section );
 			if ( ! empty( $pro_wc_fields ) ) {
 				woocommerce_update_options( $pro_wc_fields );
@@ -214,7 +214,7 @@ class AIPN_Settings {
 			'tab'              => $tab,
 			'settings-updated' => 'true',
 		);
-		if ( $section !== '' ) {
+		if ( '' !== $section ) {
 			$redirect_args['section'] = $section;
 		}
 
@@ -276,7 +276,7 @@ class AIPN_Settings {
 
 		$api_key = isset( $_POST['api_key'] ) ? sanitize_text_field( wp_unslash( $_POST['api_key'] ) ) : '';
 
-		if ( $api_key === '' ) {
+		if ( '' === $api_key ) {
 			wp_send_json_error( array( 'message' => __( 'API key is empty.', 'ai-price-negotiator-for-woocommerce' ) ) );
 		}
 
@@ -294,9 +294,9 @@ class AIPN_Settings {
 
 		$code = wp_remote_retrieve_response_code( $response );
 
-		if ( $code === 200 ) {
+		if ( 200 === $code ) {
 			wp_send_json_success( array( 'message' => __( 'API key is valid!', 'ai-price-negotiator-for-woocommerce' ) ) );
-		} elseif ( $code === 401 ) {
+		} elseif ( 401 === $code ) {
 			wp_send_json_error( array( 'message' => __( 'Invalid API key. Please check and try again.', 'ai-price-negotiator-for-woocommerce' ) ) );
 		} else {
 			$body = json_decode( wp_remote_retrieve_body( $response ), true );
@@ -403,7 +403,7 @@ class AIPN_Settings {
 
 		switch ( $tab ) {
 			case 'general':
-				return $section === 'pricing' ? $this->get_pricing_fields() : $this->get_setup_fields();
+				return 'pricing' === $section ? $this->get_pricing_fields() : $this->get_setup_fields();
 			case 'appearance':
 				return $this->get_colors_fields();
 			case 'text':

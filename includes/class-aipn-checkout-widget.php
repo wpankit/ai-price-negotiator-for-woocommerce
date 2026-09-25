@@ -65,7 +65,7 @@ class AIPN_Checkout_Widget {
 	 * Shortcode handler: [aipn_negotiator]
 	 * Allows developers to place the widget anywhere on the checkout page.
 	 */
-	public function shortcode_render( $atts ): string {
+	public function shortcode_render( $atts ): string { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found -- Shortcode callback signature.
 		if ( ! $this->should_show_widget() ) {
 			return '';
 		}
@@ -126,7 +126,7 @@ class AIPN_Checkout_Widget {
 		$google_fonts = array( 'inter', 'roboto', 'open-sans', 'lato', 'poppins', 'nunito', 'montserrat' );
 		if ( in_array( $font_family, $google_fonts, true ) ) {
 			$font_name = ucfirst( str_replace( '-', '+', $font_family ) );
-			if ( $font_family === 'open-sans' ) {
+			if ( 'open-sans' === $font_family ) {
 				$font_name = 'Open+Sans';
 			}
 			wp_enqueue_style(
@@ -149,7 +149,7 @@ class AIPN_Checkout_Widget {
 		// User bubble — falls back to primary if empty.
 		$css_vars .= sprintf(
 			' --aipn-msg-user: %s;',
-			esc_attr( $user_bubble ?: $primary_color )
+			esc_attr( $user_bubble ? $user_bubble : $primary_color )
 		);
 
 		// User bubble text color.
@@ -188,7 +188,7 @@ class AIPN_Checkout_Widget {
 		);
 		foreach ( $adv_colors as $option_key => $css_var ) {
 			$val = get_option( $option_key, '' );
-			if ( $val !== '' ) {
+			if ( '' !== $val ) {
 				$css_vars .= sprintf( ' %s: %s;', $css_var, esc_attr( $val ) );
 			}
 		}
@@ -207,7 +207,7 @@ class AIPN_Checkout_Widget {
 
 		// Widget width.
 		$width = (int) get_option( 'aipn_widget_width', 500 );
-		if ( $width && $width !== 500 ) {
+		if ( $width && 500 !== $width ) {
 			$css_vars .= sprintf( ' --aipn-widget-width: %dpx;', $width );
 		}
 
@@ -297,12 +297,12 @@ class AIPN_Checkout_Widget {
 	 */
 	private function should_show_widget(): bool {
 		// Global toggle.
-		if ( get_option( 'aipn_enabled', 'yes' ) !== 'yes' ) {
+		if ( 'yes' !== get_option( 'aipn_enabled', 'yes' ) ) {
 			return false;
 		}
 
 		// API key required.
-		if ( trim( (string) get_option( 'aipn_openai_key', '' ) ) === '' ) {
+		if ( '' === trim( (string) get_option( 'aipn_openai_key', '' ) ) ) {
 			return false;
 		}
 
@@ -372,7 +372,7 @@ class AIPN_Checkout_Widget {
 	 */
 	private function darken_color( string $hex, int $percent ): string {
 		$hex = ltrim( $hex, '#' );
-		if ( strlen( $hex ) === 3 ) {
+		if ( 3 === strlen( $hex ) ) {
 			$hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
 		}
 

@@ -307,9 +307,9 @@ class AIPN_Analytics {
 										$customer_email = $row['customer_email'] ?? '';
 										$customer_id    = (int) ( $row['customer_id'] ?? 0 );
 
-										if ( $customer_name !== '' ) {
+										if ( '' !== $customer_name ) {
 											echo esc_html( $customer_name );
-											if ( $customer_email !== '' ) {
+											if ( '' !== $customer_email ) {
 												echo '<br><small style="color:#6b7280;">' . esc_html( $customer_email ) . '</small>';
 											}
 										} elseif ( $customer_id > 0 ) {
@@ -326,8 +326,8 @@ class AIPN_Analytics {
 										</span>
 									</td>
 									<td><?php echo esc_html( $currency . number_format( (float) $row['cart_total'], 2 ) ); ?></td>
-									<td><?php echo esc_html( $row['status'] === 'accepted' ? $currency . number_format( (float) $row['final_price'], 2 ) : '—' ); ?></td>
-									<td><?php echo esc_html( $row['status'] === 'accepted' ? '-' . $currency . number_format( (float) $row['discount_amount'], 2 ) : '—' ); ?></td>
+									<td><?php echo esc_html( 'accepted' === $row['status'] ? $currency . number_format( (float) $row['final_price'], 2 ) : '—' ); ?></td>
+									<td><?php echo esc_html( 'accepted' === $row['status'] ? '-' . $currency . number_format( (float) $row['discount_amount'], 2 ) : '—' ); ?></td>
 									<td><?php echo esc_html( $row['turn_count'] ); ?></td>
 									<td>
 									<?php
@@ -387,7 +387,7 @@ endif;
 													$content = $msg['content'] ?? '';
 													?>
 													<div class="aipn-chat-log__msg aipn-chat-log__msg--<?php echo esc_attr( $role ); ?>">
-														<span class="aipn-chat-log__role"><?php echo esc_html( $role === 'user' ? __( 'Customer', 'ai-price-negotiator-for-woocommerce' ) : __( 'AI Agent', 'ai-price-negotiator-for-woocommerce' ) ); ?></span>
+														<span class="aipn-chat-log__role"><?php echo esc_html( 'user' === $role ? __( 'Customer', 'ai-price-negotiator-for-woocommerce' ) : __( 'AI Agent', 'ai-price-negotiator-for-woocommerce' ) ); ?></span>
 														<span class="aipn-chat-log__text"><?php echo esc_html( $content ); ?></span>
 													</div>
 												<?php endforeach; ?>
@@ -439,12 +439,12 @@ endif;
 			$customer_email = $row['customer_email'] ?? '';
 
 			// Fallback to WP user data if name/email columns are empty (old records).
-			if ( $customer_name === '' ) {
+			if ( '' === $customer_name ) {
 				$customer_id = (int) ( $row['customer_id'] ?? 0 );
 				if ( $customer_id > 0 ) {
 					$user           = get_userdata( $customer_id );
 					$customer_name  = $user ? $user->display_name : '#' . $customer_id;
-					$customer_email = $customer_email ?: ( $user ? $user->user_email : '' );
+					$customer_email = $customer_email ? $customer_email : ( $user ? $user->user_email : '' );
 				} else {
 					$customer_name = __( 'Guest', 'ai-price-negotiator-for-woocommerce' );
 				}

@@ -72,15 +72,16 @@ class AIPN_Advanced_Rules {
 		$effective_rounds   = min( $max_turns, count( $concession_weights ) );
 
 		$cumulative_discount = 0.0;
-		for ( $i = 0; $i < min( $current_turn, $effective_rounds ); $i++ ) {
+		$rounds_so_far       = min( $current_turn, $effective_rounds );
+		for ( $i = 0; $i < $rounds_so_far; $i++ ) {
 			$cumulative_discount += $usable_discount * $concession_weights[ $i ];
 		}
 		$current_target = max( $floor_total, round( $cart_total - $cumulative_discount, 2 ) );
 
 		// Stock-based pricing adjustments.
-		if ( get_option( 'aipn_enable_stock_pricing', 'no' ) === 'yes' ) {
+		if ( 'yes' === get_option( 'aipn_enable_stock_pricing', 'no' ) ) {
 			foreach ( $cart_data['items'] as $item ) {
-				if ( $item['stock_qty'] === null || ! $item['is_negotiable'] ) {
+				if ( null === $item['stock_qty'] || ! $item['is_negotiable'] ) {
 					continue;
 				}
 				if ( $item['stock_qty'] <= 5 && $item['stock_qty'] > 0 ) {
@@ -90,7 +91,7 @@ class AIPN_Advanced_Rules {
 				}
 			}
 			$cumulative_adjusted = 0.0;
-			for ( $i = 0; $i < min( $current_turn, $effective_rounds ); $i++ ) {
+			for ( $i = 0; $i < $rounds_so_far; $i++ ) {
 				$cumulative_adjusted += $usable_discount * $concession_weights[ $i ];
 			}
 			$current_target = max( $floor_total, round( $cart_total - $cumulative_adjusted, 2 ) );
@@ -137,7 +138,7 @@ class AIPN_Advanced_Rules {
 		}
 
 		// First counter-offer rule (based on concession formula).
-		if ( $current_turn === 1 && $best_offer > 0 && $margin > 0 ) {
+		if ( 1 === $current_turn && $best_offer > 0 && $margin > 0 ) {
 			$first_counter_min = round( ( $cart_total - ( $usable_discount * 0.40 ) ) * 2 ) / 2;
 			$rules[]           = sprintf(
 				'FIRST COUNTER RULE: Your first counter-offer should be no lower than %s%.2f. Always leave room to give more in later rounds.',
@@ -147,9 +148,9 @@ class AIPN_Advanced_Rules {
 		}
 
 		// Turn-specific strategies.
-		if ( $current_turn === 0 ) {
+		if ( 0 === $current_turn ) {
 			$rules[] = 'This is the very first message. Do NOT make a counter-offer or mention any prices. Just welcome them and invite them to tell you what price they had in mind.';
-		} elseif ( $current_turn === 1 && $best_offer > 0 ) {
+		} elseif ( 1 === $current_turn && $best_offer > 0 ) {
 			$rules[] = 'They just opened with their first offer. Acknowledge it positively, explain why the items are worth more, and suggest a number closer to your target.';
 		}
 
@@ -263,7 +264,7 @@ class AIPN_Advanced_Rules {
 	/**
 	 * Add volume-based discount rules to the context.
 	 */
-	public function add_volume_rules( array $context, array $cart_data, array $session ): array {
+	public function add_volume_rules( array $context, array $cart_data, array $session ): array { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- aipn_rules_context passes three arguments.
 		$rules = array();
 
 		// Quantity-based: extra discount for buying multiples.
@@ -308,7 +309,7 @@ class AIPN_Advanced_Rules {
 
 		// Check for items that are close to a quantity threshold.
 		foreach ( $cart_data['items'] as $item ) {
-			if ( $item['quantity'] === 1 ) {
+			if ( 1 === $item['quantity'] ) {
 				$rules[] = sprintf(
 					'Tip: If the customer adds one more "%s", you could offer a better deal as a volume incentive. Mention this if negotiation stalls.',
 					$item['name']
@@ -327,8 +328,8 @@ class AIPN_Advanced_Rules {
 	/**
 	 * Add urgency-based rules to the context.
 	 */
-	public function add_urgency_rules( array $context, array $cart_data, array $session ): array {
-		if ( get_option( 'aipn_enable_urgency', 'no' ) !== 'yes' ) {
+	public function add_urgency_rules( array $context, array $cart_data, array $session ): array { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- aipn_rules_context passes three arguments.
+		if ( 'yes' !== get_option( 'aipn_enable_urgency', 'no' ) ) {
 			return $context;
 		}
 
@@ -342,7 +343,7 @@ class AIPN_Advanced_Rules {
 			}
 
 			$stock = $product->get_stock_quantity();
-			if ( $stock !== null && $stock > 0 && $stock <= 5 ) {
+			if ( null !== $stock && $stock > 0 && $stock <= 5 ) {
 				$rules[] = sprintf(
 					'"%s" has only %d left in stock. You can naturally mention this to create urgency: "Just so you know, we only have %d of these left..."',
 					$item['name'],
@@ -405,7 +406,7 @@ class AIPN_Advanced_Rules {
 		}
 
 		// Allow during sales check.
-		if ( get_option( 'aipn_allow_during_sales', 'no' ) === 'yes' ) {
+		if ( 'yes' === get_option( 'aipn_allow_during_sales', 'no' ) ) {
 			foreach ( $cart_data['items'] as $item ) {
 				$product = wc_get_product( $item['product_id'] );
 				if ( $product && $product->is_on_sale() ) {
@@ -428,7 +429,7 @@ class AIPN_Advanced_Rules {
 	 *
 	 * Makes the AI reference the original price and value in every counter-offer.
 	 */
-	public function add_anchoring_rules( array $context, array $cart_data, array $session ): array {
+	public function add_anchoring_rules( array $context, array $cart_data, array $session ): array { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- aipn_rules_context passes three arguments.
 		$currency = $context['currency'] ?? '$';
 		$rules    = array();
 
