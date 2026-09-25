@@ -1,5 +1,44 @@
 {
-  "require": {
-    "php": ">=8.0"
-  }
+	"name": "wpankit/ai-price-negotiator-for-woocommerce",
+	"description": "Let shoppers make an offer on their cart at checkout. An AI negotiator counters within your price limits and applies the deal as a coupon.",
+	"type": "wordpress-plugin",
+	"license": "GPL-2.0-or-later",
+	"homepage": "https://wordpress.org/plugins/ai-price-negotiator-for-woocommerce/",
+	"authors": [
+		{
+			"name": "WPAnkit",
+			"homepage": "https://wpankit.com/"
+		}
+	],
+	"support": {
+		"issues": "https://github.com/wpankit/ai-price-negotiator-for-woocommerce/issues",
+		"forum": "https://wordpress.org/support/plugin/ai-price-negotiator-for-woocommerce/",
+		"source": "https://github.com/wpankit/ai-price-negotiator-for-woocommerce",
+		"security": "https://github.com/wpankit/ai-price-negotiator-for-woocommerce/security/policy"
+	},
+	"require": {
+		"php": ">=7.4"
+	},
+	"require-dev": {
+		"dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+		"phpcompatibility/phpcompatibility-wp": "^2.1",
+		"wp-coding-standards/wpcs": "^3.1"
+	},
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		},
+		"platform": {
+			"php": "7.4"
+		},
+		"sort-packages": true
+	},
+	"scripts": {
+		"lint": "phpcs",
+		"format": "phpcbf"
+	},
+	"scripts-descriptions": {
+		"lint": "Check the code against the WordPress coding standards and PHP 7.4+ compatibility.",
+		"format": "Fix the coding standards issues that can be fixed automatically."
+	}
 }

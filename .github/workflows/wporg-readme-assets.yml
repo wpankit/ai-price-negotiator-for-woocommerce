@@ -1,0 +1,32 @@
+name: Update readme and assets on WordPress.org
+
+# Run by hand from main (Actions > Update readme and assets on WordPress.org > Run
+# workflow) to publish changes to readme.txt and .wordpress-org without a release,
+# for example a new "Tested up to" or new screenshots. Plugin code is never touched.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-wordpress-org
+  cancel-in-progress: false
+
+jobs:
+  update:
+    name: Update readme and assets
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Update WordPress.org
+        uses: 10up/action-wordpress-plugin-asset-update@stable
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SLUG: ai-price-negotiator-for-woocommerce
+          IGNORE_OTHER_FILES: true

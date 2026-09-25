@@ -1,0 +1,41 @@
+name: Coding Standards
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  phpcs:
+    name: WordPress Coding Standards
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+          tools: cs2pr
+
+      - name: Install the coding standards
+        uses: ramsey/composer-install@v3
+
+      # phpcs.xml.dist holds the rules: WordPress-Extra, PHP 7.4+ compatibility,
+      # the text domain and the aipn prefix.
+      - name: Run PHPCS
+        run: vendor/bin/phpcs -q --no-colors --report-full --report-checkstyle=./phpcs-report.xml
+
+      - name: Show the issues on the pull request
+        if: ${{ always() && hashFiles('phpcs-report.xml') != '' }}
+        run: cs2pr ./phpcs-report.xml

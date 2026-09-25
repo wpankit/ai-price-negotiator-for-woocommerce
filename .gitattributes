@@ -1,5 +1,21 @@
+# Development files stay out of release exports: git archive, the zips GitHub builds,
+# and the wordpress.org deploy workflow.
 /.github export-ignore
 /.wordpress-org export-ignore
+/tools export-ignore
+/.editorconfig export-ignore
 /.gitattributes export-ignore
 /.gitignore export-ignore
 /composer.json export-ignore
+/composer.lock export-ignore
+/phpcs.xml.dist export-ignore
+/CODE_OF_CONDUCT.md export-ignore
+/CONTRIBUTING.md export-ignore
+/README.md export-ignore
+/SECURITY.md export-ignore
+/SUPPORT.md export-ignore
+
+# Line endings.
+* text=auto eol=lf
+*.png binary
+*.mo binary

@@ -1,0 +1,36 @@
+name: Plugin Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  plugin-check:
+    name: WordPress.org Plugin Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      # Check the plugin exactly as it ships: .gitattributes keeps development files out.
+      - name: Build the plugin as it ships
+        run: |
+          mkdir -p build/ai-price-negotiator-for-woocommerce
+          git archive HEAD | tar -x -C build/ai-price-negotiator-for-woocommerce
+
+      - name: Run Plugin Check
+        uses: wordpress/plugin-check-action@v1
+        with:
+          build-dir: ./build/ai-price-negotiator-for-woocommerce
+          # The plugin calls the OpenAI API directly. The WordPress AI Client this check
+          # suggests needs WordPress 7.0, and the plugin supports WordPress 5.8 and later.
+          exclude-checks: ai_provider
