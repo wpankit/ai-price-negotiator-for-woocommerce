@@ -39,6 +39,7 @@ jobs:
           rsync -a --delete \
             --exclude=".git/" \
             --exclude=".github/" \
+            --exclude=".wordpress-org/" \
             --exclude="node_modules/" \
             --exclude="vendor/" \
             --exclude="tests/" \

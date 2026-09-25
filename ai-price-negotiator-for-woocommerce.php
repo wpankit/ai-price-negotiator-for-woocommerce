@@ -3,29 +3,27 @@
  * Plugin Name: AI Price Negotiator for WooCommerce
  * Plugin URI: https://negotiato.com/
  * Description: AI-powered checkout negotiation — customers make offers on their entire cart and an AI negotiator closes the deal with smart counter-offers, cross-sells, and dynamic coupons.
- * Version: 0.0.1
- * Author: PluginStackDev
- * Author URI: https://pluginstack.dev/
+ * Version: 0.0.2
+ * Author: WPAnkit
+ * Author URI: https://wpankit.com/
  * Text Domain: ai-price-negotiator-for-woocommerce
  * Domain Path: /languages
  * Requires at least: 5.8
- * Tested up to: 6.9
+ * Tested up to: 7.1
  * Requires PHP: 7.4
  * Requires Plugins: woocommerce
  * License: GPL-2.0-or-later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * WC requires at least: 7.0
- * WC tested up to: 9.6
+ * WC tested up to: 11.1
  */
-
-
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
 // Plugin constants.
-define( 'AIPN_VERSION', '0.0.1' );
+define( 'AIPN_VERSION', '0.0.2' );
 define( 'AIPN_PLUGIN_FILE', __FILE__ );
 define( 'AIPN_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AIPN_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -84,7 +82,6 @@ register_deactivation_hook( __FILE__, function () {
 } );
 
 /**
- * 
  * Declare compatibility with WooCommerce features (HPOS, Blocks).
  */
 add_action( 'before_woocommerce_init', function () {
@@ -114,4 +111,3 @@ add_action( 'plugins_loaded', function () {
     // Boot the plugin.
     new AIPN_Plugin();
 }, 20 );
-

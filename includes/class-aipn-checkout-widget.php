@@ -251,6 +251,7 @@ class AIPN_Checkout_Widget {
             'deal_message'      => __( 'Deal accepted!', 'ai-price-negotiator-for-woocommerce' ),
             'sending_text'      => __( 'Negotiating...', 'ai-price-negotiator-for-woocommerce' ),
             'error_message'     => __( 'Something went wrong. Please try again.', 'ai-price-negotiator-for-woocommerce' ),
+            'ai_notice'         => __( 'You\'re chatting with an AI assistant.', 'ai-price-negotiator-for-woocommerce' ),
         );
 
         $text = array();

@@ -28,6 +28,9 @@ if ( ! isset( $aipn_widget_text ) || ! is_array( $aipn_widget_text ) ) {
         'deal_message'      => __( 'Deal accepted!', 'ai-price-negotiator-for-woocommerce' ),
     );
 }
+if ( empty( $aipn_widget_text['ai_notice'] ) ) {
+    $aipn_widget_text['ai_notice'] = __( 'You\'re chatting with an AI assistant.', 'ai-price-negotiator-for-woocommerce' );
+}
 
 // Ensure icon variables are available (safety fallback).
 $aipn_default_icon = '<svg width="%d" height="%d" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>';
@@ -75,6 +78,9 @@ if ( ! isset( $aipn_widget_icon_sm ) ) {
                 </svg>
             </button>
         </div>
+
+        <!-- Tells shoppers they are talking to an AI -->
+        <p class="aipn-widget__ai-notice"><?php echo esc_html( $aipn_widget_text['ai_notice'] ); ?></p>
 
         <!-- Messages area -->
         <div class="aipn-widget__messages" id="aipn-messages" role="log" aria-live="polite" aria-label="<?php esc_attr_e( 'Chat messages', 'ai-price-negotiator-for-woocommerce' ); ?>">
@@ -161,10 +167,5 @@ if ( ! isset( $aipn_widget_icon_sm ) ) {
                 </button>
             </div>
         </form>
-
-        <!-- Branding -->
-        <div class="aipn-widget__powered">
-            <a href="https://pluginstack.dev/?utm_source=aipn&amp;utm_medium=widget&amp;utm_content=powered-by" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Powered by PluginStack', 'ai-price-negotiator-for-woocommerce' ); ?></a>
-        </div>
     </div>
 </div>

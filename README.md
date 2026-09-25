@@ -1,3 +1,2 @@
-AI PRICE NEGOTIATOR FOR WOOCOMMERCE - 2026
-
 Testing
+# ai-price-negotiator-for-woocommerce - 2026

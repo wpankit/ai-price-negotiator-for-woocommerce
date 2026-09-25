@@ -207,12 +207,14 @@ class AIPN_Chat_Handler {
         // Process email capture if provided.
         $incoming_email = (string) $request->get_param( 'customer_email' );
         $incoming_name  = (string) $request->get_param( 'customer_name' );
+        $email_received = false;
 
         if ( $incoming_email !== '' && is_email( $incoming_email ) ) {
             $session['customer_email'] = $incoming_email;
             $session['customer_name']  = $incoming_name;
             $session['email_captured'] = true;
             $this->session_manager->update( $session );
+            $email_received = true;
         }
 
         // Extract customer input.
@@ -226,6 +228,12 @@ class AIPN_Chat_Handler {
 
         // Allow empty input on the very first turn — this triggers the AI greeting.
         $is_greeting = ( $message === '' && $offer <= 0 && empty( $session['conversation'] ) );
+
+        // The widget sends the shopper's email on its own, without a message: apply a deal
+        // that was waiting for it, without calling the AI.
+        if ( ! $is_greeting && $message === '' && $offer <= 0 && $email_received ) {
+            return $this->handle_email_only( $session );
+        }
 
         // Require at least a message or an offer (unless greeting).
         if ( ! $is_greeting && $message === '' && $offer <= 0 ) {
@@ -393,49 +401,8 @@ class AIPN_Chat_Handler {
         }
 
         // Check if email was just captured and there's a held deal — finalize it.
-        if ( $email_captured && ! empty( $session['held_accepted_price'] ) && ! $response_data['accepted'] ) {
-            $held_price = (float) $session['held_accepted_price'];
-            unset( $session['held_accepted_price'] );
-
-            $floor_total = $session['floor_total'];
-            $cart_total  = $session['cart_total'];
-
-            if ( $held_price < $floor_total ) {
-                $held_price = $floor_total;
-            }
-            if ( $held_price > $cart_total ) {
-                $held_price = $cart_total;
-            }
-
-            $best_offer = $session['best_customer_offer'] ?? 0;
-            if ( $best_offer > 0 && $held_price < $best_offer && $best_offer >= $floor_total ) {
-                $held_price = $best_offer;
-            }
-
-            $discount = max( 0, $cart_total - $held_price );
-
-            if ( $discount > 0 ) {
-                $coupon_code = $this->coupon_manager->create_cart_coupon(
-                    $discount,
-                    $session['session_id'],
-                    $session['cart_items'],
-                    $session['customer_email']
-                );
-
-                if ( ! is_wp_error( $coupon_code ) ) {
-                    $applied = $this->coupon_manager->apply_to_cart( $coupon_code, $session['customer_email'] ?? '' );
-                    if ( $applied ) {
-                        $this->session_manager->accept( $session, $held_price, $coupon_code );
-                        $response_data['accepted']    = true;
-                        $response_data['coupon_code'] = $coupon_code;
-                        $response_data['new_total']   = $held_price;
-                    }
-                }
-            } else {
-                $this->session_manager->accept( $session, $held_price, '' );
-                $response_data['accepted']  = true;
-                $response_data['new_total'] = $held_price;
-            }
+        if ( $email_captured && ! $response_data['accepted'] ) {
+            $this->finalize_held_deal( $session, $response_data );
         }
 
         // Request email capture for guests after engagement (turn >= 2).
@@ -447,6 +414,92 @@ class AIPN_Chat_Handler {
         $this->session_manager->update( $session );
 
         return new WP_REST_Response( $response_data, 200 );
+    }
+
+    /**
+     * Answer a request that only carries the shopper's email, and apply a deal
+     * that was waiting for it.
+     *
+     * @param array $session Negotiation session, with the email already saved.
+     * @return WP_REST_Response
+     */
+    private function handle_email_only( array $session ): WP_REST_Response {
+        $response_data = array(
+            'reply'        => '',
+            'accepted'     => false,
+            'coupon_code'  => '',
+            'new_total'    => 0.0,
+            'suggestions'  => array(),
+            'cart_actions' => array(),
+            'session_id'   => $session['session_id'],
+            'turn'         => $session['turn_count'] ?? 0,
+        );
+
+        if ( $this->finalize_held_deal( $session, $response_data ) && ! $response_data['accepted'] ) {
+            $response_data['reply'] = __( 'There was an issue applying the discount. Please try again.', 'ai-price-negotiator-for-woocommerce' );
+        }
+
+        $this->session_manager->update( $session );
+
+        return new WP_REST_Response( $response_data, 200 );
+    }
+
+    /**
+     * Apply a deal the negotiator agreed before the shopper gave their email.
+     *
+     * @param array $session       Negotiation session, updated in place.
+     * @param array $response_data Response data, updated in place when the deal is applied.
+     * @return bool Whether a deal was waiting.
+     */
+    private function finalize_held_deal( array &$session, array &$response_data ): bool {
+        if ( empty( $session['held_accepted_price'] ) ) {
+            return false;
+        }
+
+        $held_price = (float) $session['held_accepted_price'];
+        unset( $session['held_accepted_price'] );
+
+        $floor_total = $session['floor_total'];
+        $cart_total  = $session['cart_total'];
+
+        if ( $held_price < $floor_total ) {
+            $held_price = $floor_total;
+        }
+        if ( $held_price > $cart_total ) {
+            $held_price = $cart_total;
+        }
+
+        $best_offer = $session['best_customer_offer'] ?? 0;
+        if ( $best_offer > 0 && $held_price < $best_offer && $best_offer >= $floor_total ) {
+            $held_price = $best_offer;
+        }
+
+        $discount = max( 0, $cart_total - $held_price );
+
+        if ( $discount > 0 ) {
+            $coupon_code = $this->coupon_manager->create_cart_coupon(
+                $discount,
+                $session['session_id'],
+                $session['cart_items'],
+                $session['customer_email']
+            );
+
+            if ( ! is_wp_error( $coupon_code ) ) {
+                $applied = $this->coupon_manager->apply_to_cart( $coupon_code, $session['customer_email'] ?? '' );
+                if ( $applied ) {
+                    $this->session_manager->accept( $session, $held_price, $coupon_code );
+                    $response_data['accepted']    = true;
+                    $response_data['coupon_code'] = $coupon_code;
+                    $response_data['new_total']   = $held_price;
+                }
+            }
+        } else {
+            $this->session_manager->accept( $session, $held_price, '' );
+            $response_data['accepted']  = true;
+            $response_data['new_total'] = $held_price;
+        }
+
+        return true;
     }
 
     /**

@@ -626,25 +626,15 @@ a.aipn-widget__suggestion-name:hover {
     animation: aipn-shake 0.4s ease;
 }
 
-/* Powered-by branding */
-.aipn-widget__powered {
-    text-align: center;
-    padding: 6px 12px;
-    border-top: 1px solid var(--aipn-border);
-}
-
-.aipn-widget__powered a {
-    font-size: 10px;
+/* AI notice under the header */
+.aipn-widget .aipn-widget__ai-notice {
+    margin: 0;
+    padding: 7px 16px;
+    border-bottom: 1px solid var(--aipn-border);
     color: var(--aipn-text-muted);
-    text-decoration: none;
-    opacity: 0.6;
-    transition: opacity 0.2s;
-    letter-spacing: 0.3px;
-}
-
-.aipn-widget__powered a:hover {
-    opacity: 1;
-    color: var(--aipn-primary);
+    font-size: 11px;
+    line-height: 1.4;
+    text-align: center;
 }
 
 /* === Responsive === */
