@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       # Check the plugin exactly as it ships: .gitattributes keeps development files out.
       - name: Build the plugin as it ships

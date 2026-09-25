@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Check the version numbers match
         id: version
@@ -71,7 +71,7 @@ jobs:
 
       - name: Keep the zip from a dry run
         if: github.event_name != 'release'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ai-price-negotiator-for-woocommerce
           path: ${{ steps.deploy.outputs.zip-path }}

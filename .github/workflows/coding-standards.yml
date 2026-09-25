@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
@@ -29,7 +29,7 @@ jobs:
           tools: cs2pr
 
       - name: Install the coding standards
-        uses: ramsey/composer-install@v3
+        uses: ramsey/composer-install@v4
 
       # phpcs.xml.dist holds the rules: WordPress-Extra, PHP 7.4+ compatibility,
       # the text domain and the aipn prefix.
