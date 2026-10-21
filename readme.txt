@@ -1,5 +1,5 @@
 === AI Price Negotiator for WooCommerce ===
-Contributors: ankitmaru, siapanchal
+Contributors: applyfilters, ankitmaru, siapanchal
 Tags: woocommerce, ai chatbot, price negotiation, make an offer, dynamic pricing
 Requires at least: 5.8
 Tested up to: 7.1

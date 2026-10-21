@@ -88,4 +88,4 @@ Please report security issues privately, as described in [SECURITY.md](SECURITY.
 
 ## License
 
-[GPL-2.0-or-later](LICENSE). Made by [WPAnkit](https://wpankit.com/).
+[GPL-2.0-or-later](LICENSE). Made by [ApplyFilters](https://applyfilters.com/), a brand of WPAnkit Labs LLP.
